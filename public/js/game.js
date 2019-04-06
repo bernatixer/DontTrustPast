@@ -286,5 +286,3 @@ var game = new Phaser.Game(width, height,Phaser.AUTO, 'joc');
 
 game.state.add('play', playState);
 game.state.start('play');
-
-
