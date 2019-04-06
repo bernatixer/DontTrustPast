@@ -18,3 +18,6 @@ socket.on('myStatus', function(stat) {
   document.getElementById('deffense').innerHTML = stat.deffense;
   document.getElementById('spy').innerHTML = stat.spy;
 });
+socket.on('attack', function(data) {
+  console.log(data);
+});

@@ -103,12 +103,14 @@ setInterval(executeRound, roundTime*1000);
 io.on('connection', function(socket) {
   var playerPos;
   if (gameState === 'EMPTY') {
+    console.log('FIRST PLAYER JOINED');
     playerPos = 'first';
     socket.join('first');
     gameState = 'WAITING';
     io.emit('myStatus', firstPlayer);
     socket.emit('identification', 'first');
   } else if (gameState === 'WAITING') {
+    console.log('SECOND PLAYER JOINED');
     playerPos = 'second';
     socket.join('second');
     gameState = 'PLAYING';
@@ -119,6 +121,23 @@ io.on('connection', function(socket) {
   } else {
     socket.emit('cantPlay');
   }
+
+  socket.on('attack', data => {
+    var unitCost = unitCosts[data.type];
+    if (playerPos === 'first') {
+      if (firstPlayer[data.type] - 1 >= 0) {
+        firstPlayer[data.type] -= 1;
+        io.emit('attack', {attacker: 'first', data});
+        // AFEGIR ACCIÓ
+      }
+    } else if (playerPos === 'second') {
+      if (secondPlayer[data.type] - 1 >= 0) {
+        secondPlayer[data.type] -= 1;
+        io.emit('attack', {attacker: 'second', data});
+        // AFEGIR ACCIÓ
+      }
+    }
+  });
 
   socket.on('recruit', data => {
     var unitCost = unitCosts[data.type];

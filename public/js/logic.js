@@ -1,10 +1,7 @@
-function recruit(type, num) {
+function recruit(type) {
   var num = 1; // AGAFAR-HO D'UN INPUT
-  console.log(unitCosts)
   var unitCost = JSON.parse(unitCosts)[type];
   var tempStatus = JSON.parse(status);
-  console.log(unitCost);
-  console.log(tempStatus);
   if (unitCost['wood']*num <= tempStatus['wood'] && unitCost['iron']*num <= tempStatus['iron']) {
     tempStatus['wood'] -= unitCost['wood']*num;
     tempStatus['iron'] -= unitCost['iron']*num;
@@ -13,5 +10,15 @@ function recruit(type, num) {
     status = JSON.stringify(tempStatus);
   } else {
     alert('no tens recursos suficients')
+  }
+}
+
+function attack(type) {
+  var num = 1; // AGAFAR-HO D'UN INPUT
+  var tempStatus = JSON.parse(status);
+  if (tempStatus[type] - 1 >= 0) {
+    tempStatus[type] -= 1;
+    socket.emit('attack', {type, num});
+    status = JSON.stringify(tempStatus);
   }
 }
