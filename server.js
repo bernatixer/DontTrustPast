@@ -9,8 +9,8 @@ var port = process.env.PORT || 3000;
 var actions = [];
 
 // EACH ROUND: initResources + round * multiplyPerRound
-var initResources = 10;
-var multiplyPerRound = 1;
+var initResources = 0;
+var multiplyPerRound = 0;
 var roundTime = 1; // IN SECONDS
 
 // HOW MUCH RESOURCES EACH UNIT EAT PER ROUND
@@ -28,8 +28,8 @@ var unitCosts = {
 
 // STARTING CONSTANTS
 var startState = {
-  wood: 200,
-  iron: 200,
+  wood: 0,
+  iron: 0,
   food: 100,
   attack: 10,
   deffense: 10,
@@ -115,6 +115,7 @@ io.on('connection', function(socket) {
     socket.emit('identification', 'second');
     io.emit('myStatus', secondPlayer);
     io.emit('startGame');
+    io.emit('unitCosts', unitCosts);
   } else {
     socket.emit('cantPlay');
   }
