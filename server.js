@@ -26,8 +26,15 @@ var unitCosts = {
   'spy': { wood: 10, iron: 10 }
 }
 
-// STARTING CONSTANTS
-var startState = {
+// CASTLE LIFE
+var firstCastleLife = 30;
+var secondCastleLife = 30;
+
+// EMPTY || WAITING || PLAYING
+var round = 0;
+var gameState = 'EMPTY';
+
+var firstPlayer = {
   wood: 100,
   iron: 100,
   food: 500,
@@ -36,17 +43,15 @@ var startState = {
   spy: 0,
   wizard: 0,
 };
-
-// CASTLE LIFE
-var firsCastleLife = 30;
-var secondCastleLife = 30;
-
-// EMPTY || WAITING || PLAYING
-var round = 0;
-var gameState = 'EMPTY';
-
-var firstPlayer = startState;
-var secondPlayer = startState;
+var secondPlayer = {
+  wood: 100,
+  iron: 100,
+  food: 500,
+  attack: 10,
+  deffense: 10,
+  spy: 0,
+  wizard: 0,
+};
 
 app.use(express.static('public'))
 app.get('/', (req, res) => res.send('OK'));
@@ -111,7 +116,7 @@ io.on('connection', function(socket) {
     playerPos = 'first';
     socket.join('first');
     gameState = 'WAITING';
-    io.emit('myStatus', firstPlayer);
+    io.to('first').emit('myStatus', firstPlayer);
     socket.emit('identification', 'first');
   } else if (gameState === 'WAITING') {
     console.log('SECOND PLAYER JOINED');
@@ -119,7 +124,7 @@ io.on('connection', function(socket) {
     socket.join('second');
     gameState = 'PLAYING';
     socket.emit('identification', 'second');
-    io.emit('myStatus', secondPlayer);
+    io.to('second').emit('myStatus', secondPlayer);
     io.emit('startGame');
     io.emit('unitCosts', unitCosts);
   } else {
@@ -132,22 +137,20 @@ io.on('connection', function(socket) {
       if (firstPlayer[data.type] - 1 >= 0) {
         firstPlayer[data.type] -= 1;
         io.emit('attack', {attacker: 'first', data});
-        io.emit('myStatus', firstPlayer);
+        io.to('first').emit('myStatus', firstPlayer);
         // AFEGIR ACCIÓ
       }
     } else if (playerPos === 'second') {
       if (secondPlayer[data.type] - 1 >= 0) {
         secondPlayer[data.type] -= 1;
         io.emit('attack', {attacker: 'second', data});
-        io.emit('myStatus', secondPlayer);
+        io.to('second').emit('myStatus', secondPlayer);
         // AFEGIR ACCIÓ
       }
     }
   });
 
   socket.on('attackCastle', type => {
-    console.log(firsCastleLife);
-    console.log(secondCastleLife);
     if (type === 'attack') {
       if (playerPos === 'first') {
         secondCastleLife -= 1;
@@ -160,8 +163,6 @@ io.on('connection', function(socket) {
           io.emit('endGame', 'second');
         }
       }
-    // } else if (type === 'deffense') {
-    //   //
     } else if (type === 'spy') {
       if (playerPos === 'first') {
         if (secondPlayer['spy'] === 0) {

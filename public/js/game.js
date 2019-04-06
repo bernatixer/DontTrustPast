@@ -131,16 +131,18 @@ var playState = {
     },
 
     castleCollision: function (x,y) { // x = castle That gets reckt
-        // socket.emit('attackCastle', type);
-        console.log("castleColision");
+        let stringType = '';
+        if (y === UNITS.CHARIOT) stringType = 'attack';
+        if (y === UNITS.SPY) stringType = 'spy';
+        socket.emit('attackCastle', stringType);
         if (x === 1) {
             this.players.first.castleHealth--;
             if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
             if (this.players.first.castleHealth <= 10) this.players.first.castle.loadTexture("castle1L");
         } else {
             this.players.second.castleHealth--;
-            if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle1m");
-            if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle1l");
+            if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
+            if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle2L");
         }
     },
 

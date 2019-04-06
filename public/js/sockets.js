@@ -4,13 +4,17 @@ var unitCosts = {};
 var canPlay = false;
 var status = {};
 socket.on('cantPlay', () => message('Two players already playing'));
-socket.on('identification', identity => id = identity);
+socket.on('identification', identity => {
+  id = identity
+  message(identity);
+});
 socket.on('startGame', () => canPlay = true);
-socket.on('endGame', who => alert('PLAYER WON: ', who));
+socket.on('endGame', who => alert('PLAYER WON: ' + who));
 socket.on('unitCosts', function(costs) {
   unitCosts = JSON.stringify(costs);
 });
 socket.on('myStatus', function(stat) {
+  let hadWizard = status.wizard === 1;
   status = JSON.stringify(stat);
   document.getElementById('wood').innerHTML = stat.wood;
   document.getElementById('iron').innerHTML = stat.iron;
@@ -18,15 +22,15 @@ socket.on('myStatus', function(stat) {
   document.getElementById('attack').innerHTML = stat.attack;
   document.getElementById('deffense').innerHTML = stat.deffense;
   document.getElementById('spy').innerHTML = stat.spy;
-  if (stat.wizard === 1) {
+  if (!hadWizard && stat.wizard === 1) {
     message('You can now train a Wizard');
   }
 });
 socket.on('attack', function(data) {
   console.log(data);
   let unit;
-  if (data.data.type === 'attack') unit = UNITS.WARRIOR;
-  if (data.data.type === 'deffense') unit = UNITS.CHARIOT;
+  if (data.data.type === 'attack') unit = UNITS.CHARIOT;
+  if (data.data.type === 'deffense') unit = UNITS.WARRIOR;
   if (data.data.type === 'spy') unit = UNITS.SPY;
   if (data.attacker === 'first') {
     playState.spawnUnit(1, unit);

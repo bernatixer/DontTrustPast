@@ -16,7 +16,6 @@ function recruit(type) {
 function attack(type) {
   var num = 1;
   var tempStatus = JSON.parse(status);
-  console.log(tempStatus, type);
   if (tempStatus[type] - 1 >= 0) {
     tempStatus[type] -= 1;
     socket.emit('attack', {type, num});
