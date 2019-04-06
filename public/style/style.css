@@ -1,0 +1,12 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.header {
+	height: 20vh;
+}
+
+.body {
+	height: 80vh;
+}
