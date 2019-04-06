@@ -17,10 +17,15 @@ var playState = {
         game.load.image('castle2M', 'assets/Castles/Castle2M.png');
         game.load.image('castle2L', 'assets/Castles/Castle2L.png');
 
-        game.load.image('warrior1', 'assets/Warriors/Warrior1_64.png');
-        game.load.image('warrior2', 'assets/Warriors/Warrior2_64.png');
-        game.load.image('chariot1', 'assets/Warriors/Chariot1_64.png');
-        game.load.image('chariot2', 'assets/Warriors/Chariot2_64.png');
+        game.load.image('warrior1', 'assets/Warriors/Warrior1_32.png');
+        game.load.image('warrior2', 'assets/Warriors/Warrior2_32.png');
+        game.load.image('chariot1', 'assets/Warriors/Chariot1_32.png');
+        game.load.image('chariot2', 'assets/Warriors/Chariot2_32.png');
+        game.load.image('spy1', 'assets/Warriors/Spy1_32.png');
+        game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
+        game.load.image('wizard1', 'assets/Warriors/Wizard1_32.png');
+        game.load.image('wizard2', 'assets/Warriors/Wizard2_32.png');
+
 
         if (!game.device.desktop) {
             game.load.image('right', 'assets/right.png');
@@ -138,23 +143,13 @@ var playState = {
         this.spaceDown = space.isDown;
     },
     spawnWarrior: function (x) {
-        if (x === 1) {
-            let tmp;
-            tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'warrior1', 0, this.players.one.attack);
-            tmp.anchor.setTo(0.5, 0.5);
-            game.physics.arcade.enable(tmp);
-            tmp.body.gravity.y = 600;
-            tmp.body.setSize(20, 20, 0, 0);
-            tmp.body.velocity.x = 50;
-        } else {
-            let tmp;
-            tmp = game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'chariot2', 0, this.players.second.attack);
-            tmp.anchor.setTo(0.5, 0.5);
-            game.physics.arcade.enable(tmp);
-            tmp.body.gravity.y = 600;
-            tmp.body.setSize(20, 20, 0, 0);
-            tmp.body.velocity.x = -50;
-        }
+        let tmp = x === 1 ? game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'warrior1', 0, this.players.one.attack):
+            game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'chariot2', 0, this.players.second.attack);
+        tmp.anchor.setTo(1, 1);
+        game.physics.arcade.enable(tmp);
+        tmp.body.gravity.y = 600;
+        tmp.body.setSize(20, 20, 0, 0);
+        tmp.body.velocity.x = x === 1 ? 50 : -50;
     },
 
     warriorsCollision: function (a, b) {
