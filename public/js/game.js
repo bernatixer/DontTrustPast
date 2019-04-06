@@ -69,13 +69,9 @@ var playState = {
         let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
         let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
 
-        if (this.cursor.up.isDown) {
-            this.jumpPlayer();
-        }
-
         if (space.isDown && !this.spaceDown) {
-            this.spawnUnit(1, this.getRandomUnit());
-            this.spawnUnit(2, this.getRandomUnit());
+            this.spawnUnit(1, getRandomUnit());
+            this.spawnUnit(2, getRandomUnit());
         }
 
         if (attack.isDown && !this.attackDown) {
@@ -104,10 +100,6 @@ var playState = {
         this.wizardDown = wizard.isDown;
     },
 
-    getRandomUnit: function() {
-        return UNITS[Object.keys(UNITS)[Math.floor(Math.random()*Object.keys(UNITS).length)]];
-    },
-
     spawnUnit: function (team, type) {
         const Team = team === 1 ? this.players.first : this.players.second;
         let tmp = game.add.sprite(Team.spawnPos.y, Team.spawnPos.x, type + team.toString(), 0, Team.attack);
@@ -115,26 +107,7 @@ var playState = {
         game.physics.arcade.enable(tmp);
         tmp.body.gravity.y = 600;
         tmp.body.setSize(20, 20, 0, 0);
-        tmp.body.velocity.x = this.getUnitSpeed(team, type);
-    },
-
-    getUnitSpeed: function (team, type) {
-        let speed = 0;
-        switch (type) {
-            case UNITS.WARRIOR:
-                speed = team === 1 ? WARRIOR_SPEED : -WARRIOR_SPEED;
-                break;
-            case UNITS.CHARIOT:
-                speed = team === 1 ? CHARIOT_SPEED : -CHARIOT_SPEED;
-                break;
-            case UNITS.SPY:
-                speed = team === 1 ? SPY_SPEED : -SPY_SPEED;
-                break;
-            case UNITS.WIZARD:
-                speed = team === 1 ? WIZARD_SPEED : -WIZARD_SPEED;
-                break;
-        }
-        return speed;
+        tmp.body.velocity.x = getUnitSpeed(team, type);
     },
 
     warriorsCollision: function (a, b) {
@@ -180,8 +153,9 @@ var playState = {
         this.players.second.attack = game.add.group();
         this.players.first.attack.enableBody = true;
 
-        for (var i = 0; i < level.length; i++) {
-            for (var j = 0; j < level[i].length; j++) {
+
+        for (let i = 0; i < level.length; i++) {
+            for (let j = 0; j < level[i].length; j++) {
                 switch (level[i][j]) {
                     case 'x':
                         game.add.sprite(20 * j, 20 * i, 'grass', 0, this.level);
@@ -290,9 +264,9 @@ var playState = {
     }
 };
 
-var width = window.innerWidth;
-var height = window.innerHeight * 0.8;
-var game = new Phaser.Game(width, height, Phaser.AUTO, 'joc');
+const width = window.innerWidth;
+const height = window.innerHeight * 0.8;
+const game = new Phaser.Game(width, height, Phaser.AUTO, 'joc');
 
 game.state.add('play', playState);
 game.state.start('play');
