@@ -4,15 +4,9 @@ var playState = {
 
         game.load.image('background', 'assets/Background_purple_mountains.png');
 
-        game.load.spritesheet('player', 'assets/player.png', 28, 22);
         game.load.image('grass', 'assets/grass.png');
         game.load.image('grass2', 'assets/grass2.png');
-        game.load.image('ground', 'assets/ground.png');
-        game.load.image('dust', 'assets/dust.png');
         game.load.image('blood', 'assets/blood.png');
-        game.load.image('exp', 'assets/exp.png');
-        game.load.image('enemy', 'assets/enemy.png');
-        game.load.image('coin', 'assets/coin.png');
 
         game.load.image('castle1H', 'assets/Castles/Castle1H.png');
         game.load.image('castle1M', 'assets/Castles/Castle1M.png');
@@ -46,32 +40,28 @@ var playState = {
     update: function () {
         this.inputs();
 
-        this.exp.forEachAlive(function (p) {
-            p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
-        }, this);
-
         game.physics.arcade.collide(this.players.first.attack, this.level);
         game.physics.arcade.collide(this.players.second.attack, this.level);
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
 
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.castle, function (a, b) {
-            this.castleCollision(2,UNITS.CHARIOT);
+            this.castleCollision(2, UNITS.CHARIOT);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
         game.physics.arcade.overlap(this.players.second.attack, this.players.first.castle, function (a, b) {
-            this.castleCollision(1,UNITS.CHARIOT);
+            this.castleCollision(1, UNITS.CHARIOT);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
 
         game.physics.arcade.overlap(this.players.first.spies, this.players.second.castle, function (a, b) {
-            this.castleCollision(2,UNITS.SPY);
+            this.castleCollision(2, UNITS.SPY);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
         game.physics.arcade.overlap(this.players.second.spies, this.players.first.castle, function (a, b) {
-            this.castleCollision(1,UNITS.SPY);
+            this.castleCollision(1, UNITS.SPY);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
@@ -137,12 +127,12 @@ var playState = {
         socket.emit('attackCastle', stringType);
         if (x === 1) {
             this.players.first.castleHealth--;
-            if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
             if (this.players.first.castleHealth <= 10) this.players.first.castle.loadTexture("castle1L");
+            else if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
         } else {
             this.players.second.castleHealth--;
-            if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
             if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle2L");
+            else if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
         }
     },
 
@@ -273,57 +263,14 @@ var playState = {
             }
         }
         this.level.setAll('body.immovable', true);
-        //game.physics.arcade.enable(this.enemy);
     },
-
-    /*addCoins: function() {
-        if (!this.coins) {
-            this.coins = game.add.group();
-            this.coins.enableBody = true;
-        }
-        else {
-            this.coins.forEachAlive(function(e){
-                e.kill();
-            }, this);
-        }
-
-        game.add.sprite(140, 120, 'coin', 0, this.coins);
-        game.add.sprite(170, 120, 'coin', 0, this.coins);
-        game.add.sprite(200, 120, 'coin', 0, this.coins);
-
-        this.coins.forEachAlive(function(e){
-            e.isTaken = false;
-            e.scale.setTo(0,0);
-            e.anchor.setTo(0.5);
-            game.add.tween(e.scale).to({x:1, y:1}, 200).start();
-        }, this);
-    },
-
-    takeCoin: function(a, b) {
-        b.body.enable = false;
-        game.add.tween(b.scale).to({x:0}, 150).start();
-        game.add.tween(b).to({y:50}, 150).start();
-        this.coinSound.play();
-    },*/
 
     setParticles: function () {
-        this.dust = game.add.emitter(0, 0, 20);
-        this.dust.makeParticles('dust');
-        this.dust.setYSpeed(-100, 100);
-        this.dust.setXSpeed(-100, 100);
-        this.dust.gravity = 0;
-
         this.blood = game.add.emitter(0, 0, 200);
         this.blood.makeParticles('blood');
         this.blood.setYSpeed(-100, 100);
         this.blood.setXSpeed(-100, 100);
         this.blood.gravity = 0;
-
-        this.exp = game.add.emitter(0, 0, 20);
-        this.exp.makeParticles('exp');
-        this.exp.setYSpeed(-150, 150);
-        this.exp.setXSpeed(-150, 150);
-        this.exp.gravity = 0;
     },
 
     shakeEffect: function (g) {
