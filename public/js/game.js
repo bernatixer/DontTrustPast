@@ -29,13 +29,6 @@ var playState = {
         game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
         game.load.image('wizard1', 'assets/Warriors/Wizard1_32.png');
         game.load.image('wizard2', 'assets/Warriors/Wizard2_32.png');
-
-
-        if (!game.device.desktop) {
-            game.load.image('right', 'assets/right.png');
-            game.load.image('left', 'assets/left.png');
-        }
-        game.load.image('jump', 'assets/jump.png');
     },
 
     create: function () {
