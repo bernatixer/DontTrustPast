@@ -59,7 +59,18 @@ var playState = {
 
         game.physics.arcade.collide(this.players.first.attack, this.level);
         game.physics.arcade.collide(this.players.second.attack, this.level);
-        game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
+		game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
+		
+		game.physics.arcade.overlap(this.players.first.attack,this.players.second.castle,function(a,b){
+			this.castleCollision(2);
+			b.body.enable = false;
+			game.add.tween(b.scale).to({x: 0}, 1).start();
+		},null,this);
+		game.physics.arcade.overlap(this.players.second.attack,this.players.first.castle,function(a,b){
+			this.castleCollision(1);
+			b.body.enable = false;
+			game.add.tween(b.scale).to({x: 0}, 1).start();
+		},null,this);
     },
 
     inputs: function () {
@@ -87,7 +98,20 @@ var playState = {
         this.spyDown = spy.isDown;
         this.defendDown = defend.isDown;
         this.wizardDown = wizard.isDown;
-    },
+	},
+	
+	castleCollision: function(x){ // x = castle That gets reckt
+		console.log("castleColision");
+		if(x==1){
+			this.players.first.castleHealth--;
+			if(this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
+			if(this.players.first.castleHealth <= 10)this.players.first.castle.loadTexture("castle1L");
+		}else{
+			this.players.second.castleHealth--;
+			if(this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle1m");
+			if(this.players.second.castleHealth <= 10)this.players.second.castle.loadTexture("castle1l");
+		}
+	},
 
     spawnUnit: function (team, type) {
         const Team = team === 1 ? this.players.first : this.players.second;
@@ -117,11 +141,12 @@ var playState = {
         this.background = game.add.group();
         this.level = game.add.group();
         this.level.enableBody = true;
-        this.castles = game.add.group();
         this.background.enableBody = true;
         game.add.sprite(0, 0, 'background', 0, this.background);
         this.players = {
             first: {
+				castle:null,
+				castleHealth:30,
                 spawnPos: {
                     x: null,
                     y: null
@@ -129,6 +154,8 @@ var playState = {
                 attack: null
             },
             second: {
+				castle:null,
+				castleHealth:30,
                 spawnPos: {
                     x: null,
                     y: null
@@ -161,22 +188,28 @@ var playState = {
                         this.players.second.spawnPos.y = 20 * j;
                         break;
                     case 'H':
-                        game.add.sprite(20 * j, 20 * i, 'castle1H', 0, this.castles);
+						this.players.first.castle = game.add.sprite(20 * j, 20 * i, 'castle1H');
+						game.physics.arcade.enable(this.players.first.castle);
                         break;
                     case 'M':
-                        game.add.sprite(20 * j, 20 * i, 'castle1M', 0, this.castles);
+						this.players.first.castle = game.add.sprite(20 * j, 20 * i, 'castle1M');
+						game.physics.arcade.enable(this.players.first.castle);
                         break;
                     case 'L':
-                        game.add.sprite(20 * j, 20 * i, 'castle1L', 0, this.castles);
+						this.players.first.castle = game.add.sprite(20 * j, 20 * i, 'castle1L');
+						game.physics.arcade.enable(this.players.first.castle);
                         break;
                     case 'h':
-                        game.add.sprite(20 * j, 20 * i, 'castle2H', 0, this.castles);
+						this.players.second.castle = game.add.sprite(20 * j, 20 * i, 'castle2H');
+						game.physics.arcade.enable(this.players.second.castle);
                         break;
                     case 'm':
-                        game.add.sprite(20 * j, 20 * i, 'castle2M', 0, this.castles);
+						this.players.second.castle = game.add.sprite(20 * j, 20 * i, 'castle2M');
+						game.physics.arcade.enable(this.players.second.castle);
                         break;
                     case 'l':
-                        game.add.sprite(20 * j, 20 * i, 'castle2L', 0, this.castles);
+						this.players.second.castle = game.add.sprite(20 * j, 20 * i, 'castle2L');
+						game.physics.arcade.enable(this.players.second.castle);
                         break;
                 }
             }
