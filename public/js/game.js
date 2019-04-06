@@ -50,9 +50,6 @@ var playState = {
 		this.setParticles();
 
 		this.spawnPlayer();
-
-		if (!game.device.desktop)
-			this.addMobileInputs();
 	},
 
 	update: function() {
@@ -136,27 +133,14 @@ var playState = {
 	},
 
 	loadLevel: function(coins, enemies) {
-
     this.level = game.add.group();
 		this.level.enableBody = true;
     this.enemies = game.add.group();
 
-    var level = [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '!',
-        'x',
-    ];
-
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
           if (level[i][j] == 'x') {
-              game.add.sprite(20*j, 20*i, 'ground', 0, this.level);
+              game.add.sprite(20*j, 20*i, 'wall', 0, this.level);
           } else if (level[i][j] == '!') {
               this.enemy = game.add.sprite(20*j, 20*i, 'enemy');
           }
@@ -164,8 +148,6 @@ var playState = {
     }
 		this.level.setAll('body.immovable', true);
 		game.physics.arcade.enable(this.enemy);
-
-		// this.enemy.anchor.setTo(0.5, 0.5);
 	},
 
 	addCoins: function() {
@@ -227,32 +209,6 @@ var playState = {
 			.to({x:"-"+move}, time).to({x:"+"+move*2}, time*2).to({x:"-"+move}, time)
 			.to({x:"-"+move/2}, time).to({x:"+"+move}, time*2).to({x:"-"+move/2}, time)
 			.start();
-	},
-
-	addMobileInputs: function() {
-		this.jumpButton = game.add.sprite(430, 130, 'jump');
-		this.jumpButton.inputEnabled = true;
-		this.jumpButton.events.onInputDown.add(this.jumpPlayer, this);
-		this.jumpButton.alpha = 0.5;
-
-		this.moveLeft = false;
-		this.moveRight = false;
-
-		this.leftButton = game.add.sprite(10, 130, 'left');
-		this.leftButton.inputEnabled = true;
-		this.leftButton.events.onInputOver.add(function(){this.moveLeft=true;}, this);
-		this.leftButton.events.onInputOut.add(function(){this.moveLeft=false;}, this);
-		this.leftButton.events.onInputDown.add(function(){this.moveLeft=true;}, this);
-		this.leftButton.events.onInputUp.add(function(){this.moveLeft=false;}, this);
-		this.leftButton.alpha = 0.5;
-
-		this.rightButton = game.add.sprite(110, 130, 'right');
-		this.rightButton.inputEnabled = true;
-		this.rightButton.events.onInputOver.add(function(){this.moveRight=true;}, this);
-		this.rightButton.events.onInputOut.add(function(){this.moveRight=false;}, this);
-		this.rightButton.events.onInputDown.add(function(){this.moveRight=true;}, this);
-		this.rightButton.events.onInputUp.add(function(){this.moveRight=false;}, this);
-		this.rightButton.alpha = 0.5;
 	}
 };
 var width = window.innerWidth * window.devicePixelRatio;
