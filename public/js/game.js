@@ -63,38 +63,27 @@ var playState = {
     },
 
     inputs: function () {
-        let space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        let attack = game.input.keyboard.addKey(Phaser.KeyCode.A);
+        let attackUnit = game.input.keyboard.addKey(Phaser.KeyCode.A);
         let spy = game.input.keyboard.addKey(Phaser.KeyCode.S);
         let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
         let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
 
-        if (space.isDown && !this.spaceDown) {
-            this.spawnUnit(1, getRandomUnit());
-            this.spawnUnit(2, getRandomUnit());
-        }
-
-        if (attack.isDown && !this.attackDown) {
-            this.spawnUnit(1, UNITS.CHARIOT);
-            this.spawnUnit(2, UNITS.CHARIOT);
+        if (attackUnit.isDown && !this.attackDown) {
+          attack('attack');
         }
 
         if (spy.isDown && !this.spyDown) {
-            this.spawnUnit(1, UNITS.SPY);
-            this.spawnUnit(2, UNITS.SPY);
+          attack('spy');
         }
 
         if (defend.isDown && !this.defendDown) {
-            this.spawnUnit(1, UNITS.WARRIOR);
-            this.spawnUnit(2, UNITS.WARRIOR);
+          attack('deffense');
         }
 
         if (wizard.isDown && !this.wizardDown) {
-            this.spawnUnit(1, UNITS.WIZARD);
-            this.spawnUnit(2, UNITS.WIZARD);
+          // attack('wizard');
         }
-        this.spaceDown = space.isDown;
-        this.attackDown = attack.isDown;
+        this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;
         this.defendDown = defend.isDown;
         this.wizardDown = wizard.isDown;

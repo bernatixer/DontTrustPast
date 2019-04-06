@@ -1,5 +1,5 @@
 function recruit(type) {
-  var num = 1; // AGAFAR-HO D'UN INPUT
+  var num = 1;
   var unitCost = JSON.parse(unitCosts)[type];
   var tempStatus = JSON.parse(status);
   if (unitCost['wood']*num <= tempStatus['wood'] && unitCost['iron']*num <= tempStatus['iron']) {
@@ -14,7 +14,7 @@ function recruit(type) {
 }
 
 function attack(type) {
-  var num = 1; // AGAFAR-HO D'UN INPUT
+  var num = 1;
   var tempStatus = JSON.parse(status);
   console.log(tempStatus, type);
   if (tempStatus[type] - 1 >= 0) {
