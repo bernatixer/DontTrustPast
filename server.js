@@ -140,7 +140,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'first', data});
         io.to('first').emit('myStatus', firstPlayer);
         // AFEGIR ACCIÓ
-        actionsFirst.push({ action: 'attack', when: Math.floor(Date.now() / 1000) });
+        actionsFirst.push({ action: 'attack', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     } else if (playerPos === 'second') {
       if (secondPlayer[data.type] - 1 >= 0) {
@@ -148,7 +148,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'second', data});
         io.to('second').emit('myStatus', secondPlayer);
         // AFEGIR ACCIÓ
-        actionsSecond.push({ action: 'attack', when: Math.floor(Date.now() / 1000) });
+        actionsSecond.push({ action: 'attack', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     }
   });
@@ -159,6 +159,8 @@ io.on('connection', function(socket) {
         secondCastleLife -= 1;
         if (secondCastleLife <= 0) {
           io.emit('endGame', 'first');
+          console.log('FIRST', actionsFirst);
+          console.log('SECOND', actionsSecond);
         }
       } else if (playerPos === 'second') {
         firstCastleLife -= 1;
@@ -170,12 +172,16 @@ io.on('connection', function(socket) {
       if (playerPos === 'first') {
         if (secondPlayer['spy'] === 0) {
           firstPlayer['wizard'] = 1;
+          // AFEGIR ACCIÓ
+          actionsFirst.push({ action: 'spy', type: data.type, when: Math.floor(Date.now() / 1000) });
         } else {
           secondPlayer['spy'] -= 1;
         }
       } else if (playerPos === 'second') {
         if (firstPlayer['spy'] === 0) {
           secondPlayer['wizard'] = 1;
+          // AFEGIR ACCIÓ
+          actionsSecond.push({ action: 'spy', type: data.type, when: Math.floor(Date.now() / 1000) });
         } else {
           firstPlayer['spy'] -= 1;
         }
@@ -193,7 +199,7 @@ io.on('connection', function(socket) {
         firstPlayer['iron'] -= unitCost['iron']*data.num;
         firstPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
-        actionsFirst.push({ action: 'recruit', when: Math.floor(Date.now() / 1000) });
+        actionsFirst.push({ action: 'recruit', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     } else if (playerPos === 'second') {
       if (unitCost['wood']*data.num <= secondPlayer['wood'] && unitCost['iron']*data.num <= secondPlayer['iron']) {
@@ -201,7 +207,7 @@ io.on('connection', function(socket) {
         secondPlayer['iron'] -= unitCost['iron']*data.num;
         secondPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
-        actionsSecond.push({ action: 'recruit', when: Math.floor(Date.now() / 1000) });
+        actionsSecond.push({ action: 'recruit', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     }
   });
