@@ -128,12 +128,14 @@ io.on('connection', function(socket) {
       if (firstPlayer[data.type] - 1 >= 0) {
         firstPlayer[data.type] -= 1;
         io.emit('attack', {attacker: 'first', data});
+        io.emit('myStatus', firstPlayer);
         // AFEGIR ACCIÓ
       }
     } else if (playerPos === 'second') {
       if (secondPlayer[data.type] - 1 >= 0) {
         secondPlayer[data.type] -= 1;
         io.emit('attack', {attacker: 'second', data});
+        io.emit('myStatus', secondPlayer);
         // AFEGIR ACCIÓ
       }
     }

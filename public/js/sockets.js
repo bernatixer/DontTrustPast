@@ -16,8 +16,17 @@ socket.on('myStatus', function(stat) {
   document.getElementById('food').innerHTML = stat.food;
   document.getElementById('attack').innerHTML = stat.attack;
   document.getElementById('deffense').innerHTML = stat.deffense;
-  document.getElementById('spies').innerHTML = stat.spy;
+  document.getElementById('spy').innerHTML = stat.spy;
 });
 socket.on('attack', function(data) {
   console.log(data);
+  let unit;
+  if (data.data.type === 'attack') unit = UNITS.WARRIOR;
+  if (data.data.type === 'deffense') unit = UNITS.CHARIOT;
+  if (data.data.type === 'spy') unit = UNITS.SPY;
+  if (data.attacker === 'first') {
+    playState.spawnUnit(1, unit);
+  } else if (data.attacker === 'second') {
+    playState.spawnUnit(2, unit);
+  }
 });
