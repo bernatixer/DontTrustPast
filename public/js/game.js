@@ -1,6 +1,4 @@
-
 var playState = {
-
 	preload: function() {
 		game.stage.backgroundColor = '#3498db';
 
@@ -140,7 +138,8 @@ var playState = {
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
           if (level[i][j] == 'x') {
-              game.add.sprite(20*j, 20*i, 'wall', 0, this.level);
+			  var wallSprite = game.add.sprite(20*j, 20*i, 'wall', 0, this.level);
+			  wallSprite.tint = 0x41aa31;
           } else if (level[i][j] == '!') {
               this.enemy = game.add.sprite(20*j, 20*i, 'enemy');
           }
@@ -211,9 +210,12 @@ var playState = {
 			.start();
 	}
 };
-var width = window.innerWidth * window.devicePixelRatio;
-var height = window.innerHeight * 0.8 * window.devicePixelRatio;
+
+var width = window.innerWidth;
+var height = window.innerHeight *0.8;
 var game = new Phaser.Game(width, height,Phaser.AUTO, 'joc');
 
 game.state.add('play', playState);
 game.state.start('play');
+
+
