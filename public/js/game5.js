@@ -137,38 +137,39 @@ var playState = {
 
 	loadLevel: function(coins, enemies) {
 
-    // this.walls = game.add.group();
-    // this.enemies = game.add.group();
-    //
-    // var level = [
-    //     'x',
-    // ];
-    //
-    // for (var i = 0; i < level.length; i++) {
-    //   for (var j = 0; j < level[i].length; j++) {
-    //       if (level[i][j] == 'x') {
-    //           var wall = game.add.sprite(j, i, 'ground', 0);
-    //           this.walls.add(wall);
-    //       } else if (level[i][j] == '!') {
-    //           var enemy = game.add.sprite(20*j, 20*i, 'enemy');
-    //           this.enemies.add(enemy);
-    //       }
-    //   }
-    // }
-    //
-    // game.physics.arcade.collide(this.player, this.walls);
-    // game.physics.arcade.overlap(this.player, this.enemies, this.restart, null, this);
+    this.walls = game.add.group();
+    this.enemies = game.add.group();
 
-		this.level = game.add.group();
-		this.level.enableBody = true;
-		game.add.sprite(90, 200/2 -50, 'wall', 0, this.level);
-		game.add.sprite(390, 200/2 -50, 'wall', 0, this.level);
-		game.add.sprite(500/2 - 160, 200/2 +30, 'ground', 0, this.level);
-		this.level.setAll('body.immovable', true);
+    var level = [
+        'x',
+        'x',
+    ];
 
-		this.enemy = game.add.sprite(360, 120, 'enemy');
-		game.physics.arcade.enable(this.enemy);
-		this.enemy.anchor.setTo(0.5, 0.5);
+    for (var i = 0; i < level.length; i++) {
+      for (var j = 0; j < level[i].length; j++) {
+          if (level[i][j] == 'x') {
+              var wall = game.add.sprite(20*j, 20*i, 'ground', 0);
+              this.walls.add(wall);
+          } else if (level[i][j] == '!') {
+              var enemy = game.add.sprite(20*j, 20*i, 'enemy');
+              this.enemies.add(enemy);
+          }
+      }
+    }
+
+    game.physics.arcade.collide(this.player, this.walls);
+    game.physics.arcade.overlap(this.player, this.enemies, this.restart, null, this);
+
+		// this.level = game.add.group();
+		// this.level.enableBody = true;
+		// game.add.sprite(90, 200/2 -50, 'wall', 0, this.level);
+		// game.add.sprite(390, 200/2 -50, 'wall', 0, this.level);
+		// game.add.sprite(500/2 - 160, 200/2 +30, 'ground', 0, this.level);
+		// this.level.setAll('body.immovable', true);
+		//
+		// this.enemy = game.add.sprite(360, 120, 'enemy');
+		// game.physics.arcade.enable(this.enemy);
+		// this.enemy.anchor.setTo(0.5, 0.5);
 	},
 
 	addCoins: function() {

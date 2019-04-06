@@ -1,0 +1,24 @@
+{
+  "name": "donttrustpast",
+  "version": "1.0.0",
+  "description": "Do not trust the past, a simple web-browser strategy game",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bernatixer/DontTrustPast.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bernatixer/DontTrustPast/issues"
+  },
+  "homepage": "https://github.com/bernatixer/DontTrustPast#readme"
+}
