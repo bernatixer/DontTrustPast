@@ -1,14 +1,24 @@
-function recruitAttack() {
+function recruit(type) {
   var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitAttack', num);
+  var unitCost = JSON.parse(unitCosts)[type];
+  var tempStatus = JSON.parse(status);
+  if (unitCost['wood']*num <= tempStatus['wood'] && unitCost['iron']*num <= tempStatus['iron']) {
+    tempStatus['wood'] -= unitCost['wood']*num;
+    tempStatus['iron'] -= unitCost['iron']*num;
+    tempStatus[type] += num;
+    socket.emit('recruit', {type, num});
+    status = JSON.stringify(tempStatus);
+  } else {
+    alert('no tens recursos suficients')
+  }
 }
 
-function recruitDeffense() {
+function attack(type) {
   var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitDeffense', num);
-}
-
-function recruitSpies() {
-  var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitSpies', num);
+  var tempStatus = JSON.parse(status);
+  if (tempStatus[type] - 1 >= 0) {
+    tempStatus[type] -= 1;
+    socket.emit('attack', {type, num});
+    status = JSON.stringify(tempStatus);
+  }
 }

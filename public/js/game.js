@@ -1,11 +1,14 @@
 var playState = {
     preload: function () {
-        game.stage.backgroundColor = '#3498db';
+        game.stage.backgroundColor = '#E3D1FF';
+
+        game.load.image('background', 'assets/Background_purple_mountains.png');
 
         game.load.spritesheet('player', 'assets/player.png', 28, 22);
         game.load.image('wall', 'assets/wall.png');
         game.load.image('ground', 'assets/ground.png');
         game.load.image('dust', 'assets/dust.png');
+        game.load.image('blood', 'assets/blood.png');
         game.load.image('exp', 'assets/exp.png');
         game.load.image('enemy', 'assets/enemy.png');
         game.load.image('coin', 'assets/coin.png');
@@ -17,10 +20,18 @@ var playState = {
         game.load.image('castle2M', 'assets/Castles/Castle2M.png');
         game.load.image('castle2L', 'assets/Castles/Castle2L.png');
 
-        game.load.image('warrior1', 'assets/Warriors/Warrior1_64.png');
-        game.load.image('warrior2', 'assets/Warriors/Warrior2_64.png');
-        game.load.image('chariot1', 'assets/Warriors/Chariot1_64.png');
-        game.load.image('chariot2', 'assets/Warriors/Chariot2_64.png');
+        game.load.image('warrior1', 'assets/Warriors/Warrior1_32.png');
+        game.load.image('warrior2', 'assets/Warriors/Warrior2_32.png');
+        game.load.image('chariot1', 'assets/Warriors/Chariot1_32.png');
+        game.load.image('chariot2', 'assets/Warriors/Chariot2_32.png');
+        game.load.image('spy1', 'assets/Warriors/Spy1_32.png');
+        game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
+        game.load.image('wizard1', 'assets/Warriors/Wizard1_32.png');
+        game.load.image('wizard2', 'assets/Warriors/Wizard2_32.png');
+
+        this.units1 = ['warrior1', 'chariot1', 'spy1', 'wizard1'];
+        this.units2 = ['warrior2', 'chariot2', 'spy2', 'wizard2'];
+
 
         if (!game.device.desktop) {
             game.load.image('right', 'assets/right.png');
@@ -42,16 +53,77 @@ var playState = {
         this.level = 0;
         game.sound.mute = true;
 
-        this.deadSound = game.add.audio('dead', 0.1);
+        this.loadLevel();
+        this.setParticles();
 
-        this.player = game.add.sprite(250, 50, 'player');
-        this.player.anchor.setTo(0.5, 0.5);
-        game.physics.arcade.enable(this.player);
-        this.player.body.gravity.y = 600;
-        this.player.animations.add('idle', [3, 4, 5, 4], 5, true);
-        this.player.body.setSize(20, 20, 0, 0);
-        this.playerDead = false;
+        this.spawnPlayer();
+    },
 
+    update: function () {
+
+        this.inputs();
+
+        this.exp.forEachAlive(function (p) {
+            p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
+        }, this);
+
+        game.physics.arcade.collide(this.players.one.attack, this.level);
+        game.physics.arcade.collide(this.players.second.attack, this.level);
+        game.physics.arcade.overlap(this.players.one.attack, this.players.second.attack, this.warriorsCollision, null, this);
+
+    },
+
+    inputs: function () {
+
+        let space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        if (this.cursor.up.isDown) {
+            this.jumpPlayer();
+        }
+
+        if (space.isDown && !this.spaceDown) {
+            console.log("Space down");
+            this.spawnWarrior(1);
+            this.spawnWarrior(2);
+        }
+        this.spaceDown = space.isDown;
+    },
+    spawnWarrior: function (x) {
+        let tmp = x === 1 ? game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, this.getRandomUnit(1), 0, this.players.one.attack) :
+            game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, this.getRandomUnit(2), 0, this.players.second.attack);
+        tmp.anchor.setTo(1, 1);
+        game.physics.arcade.enable(tmp);
+        tmp.body.gravity.y = 600;
+        tmp.body.setSize(20, 20, 0, 0);
+        tmp.body.velocity.x = x === 1 ? 200 : -200;
+    },
+
+    getRandomUnit: function (player) {
+        return player === 1 ? this.units1[Math.floor(Math.random() * this.units1.length)] : this.units2[Math.floor(Math.random() * this.units2.length)];
+    },
+
+    warriorsCollision: function (a, b) {
+        a.body.enable = false;
+        b.body.enable = false;
+
+        this.blood.x = (a.x + b.x) / 2;
+        this.blood.y = (a.y + b.y) / 2;
+        this.blood.start(true, 300, null, 50);
+
+        game.add.tween(a.scale).to({x: 0}, 1).start();
+        game.add.tween(b.scale).to({x: 0}, 1).start();
+
+        this.shakeEffect(this.background);
+
+    },
+
+    loadLevel: function (coins, enemies) {
+        this.background = game.add.group();
+        this.level = game.add.group();
+        this.level.enableBody = true;
+        this.castles = game.add.group();
+        this.background.enableBody = true;
+        game.add.sprite(0, 0, 'background', 0, this.background);
         this.players = {
             one: {
                 spawnPos: {
@@ -74,143 +146,12 @@ var playState = {
         this.players.second.attack = game.add.group();
         this.players.one.attack.enableBody = true;
 
-        this.loadLevel();
-        this.setParticles();
-
-        this.spawnPlayer();
-    },
-
-    update: function () {
-        game.physics.arcade.collide(this.player, this.level);
-        //game.physics.arcade.overlap(this.player, this.enemy, this.spawnPlayer, null, this);
-        //game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
-
-        this.inputs();
-
-        this.exp.forEachAlive(function (p) {
-            p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
-        }, this);
-
-        game.physics.arcade.collide(this.players.one.attack, this.level);
-        game.physics.arcade.collide(this.players.second.attack, this.level);
-        game.physics.arcade.overlap(this.players.one.attack, this.players.second.attack, this.warriorsCollision, null, this);
-
-    },
-
-    inputs: function () {
-
-        var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-        if (this.cursor.left.isDown || this.moveLeft) {
-            this.player.body.velocity.x = -200;
-            this.player.frame = 2;
-            game.sound.mute = false;
-        } else if (this.cursor.right.isDown || this.moveRight) {
-            this.player.body.velocity.x = 200;
-            this.player.frame = 1;
-            game.sound.mute = false;
-        } else {
-            this.player.body.velocity.x = 0;
-        }
-
-        if (this.player.body.velocity.x === 0)
-            this.player.animations.play('idle');
-
-        if (this.player.body.touching.down && this.player.y > 100) {
-            if (this.hasJumped) {
-                this.dust.x = this.player.x;
-                this.dust.y = this.player.y + 10;
-                this.dust.start(true, 300, null, 8);
-            }
-
-            this.hasJumped = false;
-        }
-
-        if (this.cursor.up.isDown) {
-            this.jumpPlayer();
-        }
-
-        if (space.isDown && !this.spaceDown) {
-            console.log("Space down");
-            this.spawnWarrior(1);
-            this.spawnWarrior(2);
-        }
-        this.spaceDown = space.isDown;
-    },
-    spawnWarrior: function (x) {
-        if (x === 1) {
-            let tmp;
-            tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'warrior1', 0, this.players.one.attack);
-            tmp.anchor.setTo(0.5, 0.5);
-            game.physics.arcade.enable(tmp);
-            tmp.body.gravity.y = 600;
-            tmp.body.setSize(20, 20, 0, 0);
-            tmp.body.velocity.x = 50;
-        } else {
-            let tmp;
-            tmp = game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'chariot2', 0, this.players.second.attack);
-            tmp.anchor.setTo(0.5, 0.5);
-            game.physics.arcade.enable(tmp);
-            tmp.body.gravity.y = 600;
-            tmp.body.setSize(20, 20, 0, 0);
-            tmp.body.velocity.x = -50;
-        }
-    },
-
-    warriorsCollision: function (a, b) {
-        a.body.enable = false;
-        b.body.enable = false;
-
-        game.add.tween(a.scale).to({x: 0}, 150).start();
-        game.add.tween(a).to({y: 50}, 150).start();
-
-        game.add.tween(b.scale).to({x: 0}, 150).start();
-        game.add.tween(b).to({y: 50}, 150).start();
-    },
-
-    jumpPlayer: function () {
-        if (this.player.body.touching.down && this.player.y > 100) {
-            game.sound.mute = false;
-            this.hasJumped = true;
-            this.player.body.velocity.y = -220;
-        }
-    },
-
-    spawnPlayer: function () {
-        if (this.playerDead) {
-            this.exp.x = this.player.x;
-            this.exp.y = this.player.y + 10;
-            this.exp.start(true, 300, null, 20);
-
-            this.shakeEffect(this.level);
-            //this.shakeEffect(this.enemy);
-
-            this.deadSound.play();
-        }
-
-        this.player.scale.setTo(0, 0);
-        game.add.tween(this.player.scale).to({x: 1, y: 1}, 300).start();
-        //this.player.reset(250, 50);
-
-        this.hasJumped = true;
-        this.playerDead = true;
-
-        this.moveLeft = false;
-        this.moveRight = false;
-
-        //this.addCoins();
-    },
-
-    loadLevel: function (coins, enemies) {
-        this.level = game.add.group();
-        this.level.enableBody = true;
-        this.enemies = game.add.group();
 
         for (var i = 0; i < level.length; i++) {
             for (var j = 0; j < level[i].length; j++) {
                 switch (level[i][j]) {
                     case 'x':
-                        var wallSprite = game.add.sprite(20 * j, 20 * i, 'wall', 0, this.level);
+                        let wallSprite = game.add.sprite(20 * j, 20 * i, 'wall', 0, this.level);
                         wallSprite.tint = 0x41aa31;
                         break;
                     case '1':
@@ -224,22 +165,22 @@ var playState = {
                         this.players.second.spawnPos.y = 20 * j;
                         break;
                     case 'H':
-                        game.add.sprite(20 * j, 20 * i, 'castle1H', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle1H', 0, this.castles);
                         break;
                     case 'M':
-                        game.add.sprite(20 * j, 20 * i, 'castle1M', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle1M', 0, this.castles);
                         break;
                     case 'L':
-                        game.add.sprite(20 * j, 20 * i, 'castle1L', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle1L', 0, this.castles);
                         break;
                     case 'h':
-                        game.add.sprite(20 * j, 20 * i, 'castle2H', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle2H', 0, this.castles);
                         break;
                     case 'm':
-                        game.add.sprite(20 * j, 20 * i, 'castle2M', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle2M', 0, this.castles);
                         break;
                     case 'l':
-                        game.add.sprite(20 * j, 20 * i, 'castle2L', 0, this.level);
+                        game.add.sprite(20 * j, 20 * i, 'castle2L', 0, this.castles);
                         break;
                 }
             }
@@ -285,6 +226,12 @@ var playState = {
         this.dust.setXSpeed(-100, 100);
         this.dust.gravity = 0;
 
+        this.blood = game.add.emitter(0, 0, 200);
+        this.blood.makeParticles('blood');
+        this.blood.setYSpeed(-100, 100);
+        this.blood.setXSpeed(-100, 100);
+        this.blood.gravity = 0;
+
         this.exp = game.add.emitter(0, 0, 20);
         this.exp.makeParticles('exp');
         this.exp.setYSpeed(-150, 150);
@@ -293,8 +240,8 @@ var playState = {
     },
 
     shakeEffect: function (g) {
-        var move = 5;
-        var time = 20;
+        let move = 5;
+        let time = 5;
 
         game.add.tween(g)
             .to({y: "-" + move}, time).to({y: "+" + move * 2}, time * 2).to({y: "-" + move}, time)

@@ -1,0 +1,9 @@
+var TEULADA_1 = "#229954";
+var TEULADA_FOSCA_1 = "#196F3D";
+var BANDERA_1 = "#48C9B0";
+
+var TEULADA_2 = "#2471A3";
+var TEULADA_FOSCA_2 = "#1A5276";
+var BANDERA_2 = "#A569BD";
+
+
