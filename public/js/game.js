@@ -1,6 +1,6 @@
 var playState = {
     preload: function () {
-        game.stage.backgroundColor = '#E3D1FF';
+        game.stage.backgroundColor = BACKGROUND_6;
 
         game.load.image('background', 'assets/Background_purple_mountains.png');
 
@@ -28,9 +28,6 @@ var playState = {
         game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
         game.load.image('wizard1', 'assets/Warriors/Wizard1_32.png');
         game.load.image('wizard2', 'assets/Warriors/Wizard2_32.png');
-
-        this.units1 = ['warrior1', 'chariot1', 'spy1', 'wizard1'];
-        this.units2 = ['warrior2', 'chariot2', 'spy2', 'wizard2'];
 
 
         if (!game.device.desktop) {
@@ -67,39 +64,86 @@ var playState = {
             p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
         }, this);
 
-        game.physics.arcade.collide(this.players.one.attack, this.level);
+        game.physics.arcade.collide(this.players.first.attack, this.level);
         game.physics.arcade.collide(this.players.second.attack, this.level);
-        game.physics.arcade.overlap(this.players.one.attack, this.players.second.attack, this.warriorsCollision, null, this);
+        game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
 
     },
 
     inputs: function () {
 
         let space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        let attack = game.input.keyboard.addKey(Phaser.KeyCode.A);
+        let spy = game.input.keyboard.addKey(Phaser.KeyCode.S);
+        let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
+        let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
 
         if (this.cursor.up.isDown) {
             this.jumpPlayer();
         }
 
         if (space.isDown && !this.spaceDown) {
-            console.log("Space down");
-            this.spawnWarrior(1);
-            this.spawnWarrior(2);
+            this.spawnUnit(1, this.getRandomUnit());
+            this.spawnUnit(2, this.getRandomUnit());
+        }
+
+        if (attack.isDown && !this.attackDown) {
+            this.spawnUnit(1, UNITS.CHARIOT);
+            this.spawnUnit(2, UNITS.CHARIOT);
+        }
+
+        if (spy.isDown && !this.spyDown) {
+            this.spawnUnit(1, UNITS.SPY);
+            this.spawnUnit(2, UNITS.SPY);
+        }
+
+        if (defend.isDown && !this.defendDown) {
+            this.spawnUnit(1, UNITS.WARRIOR);
+            this.spawnUnit(2, UNITS.WARRIOR);
+        }
+
+        if (wizard.isDown && !this.wizardDown) {
+            this.spawnUnit(1, UNITS.WIZARD);
+            this.spawnUnit(2, UNITS.WIZARD);
         }
         this.spaceDown = space.isDown;
+        this.attackDown = attack.isDown;
+        this.spyDown = spy.isDown;
+        this.defendDown = defend.isDown;
+        this.wizardDown = wizard.isDown;
     },
-    spawnWarrior: function (x) {
-        let tmp = x === 1 ? game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, this.getRandomUnit(1), 0, this.players.one.attack) :
-            game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, this.getRandomUnit(2), 0, this.players.second.attack);
+
+    getRandomUnit: function() {
+        return UNITS[Object.keys(UNITS)[Math.floor(Math.random()*Object.keys(UNITS).length)]];
+    },
+
+    spawnUnit: function (team, type) {
+        const Team = team === 1 ? this.players.first : this.players.second;
+        let tmp = game.add.sprite(Team.spawnPos.y, Team.spawnPos.x, type + team.toString(), 0, Team.attack);
         tmp.anchor.setTo(1, 1);
         game.physics.arcade.enable(tmp);
         tmp.body.gravity.y = 600;
         tmp.body.setSize(20, 20, 0, 0);
-        tmp.body.velocity.x = x === 1 ? 200 : -200;
+        tmp.body.velocity.x = this.getUnitSpeed(team, type);
     },
 
-    getRandomUnit: function (player) {
-        return player === 1 ? this.units1[Math.floor(Math.random() * this.units1.length)] : this.units2[Math.floor(Math.random() * this.units2.length)];
+    getUnitSpeed: function (team, type) {
+        let speed = 0;
+        switch (type) {
+            case UNITS.WARRIOR:
+                speed = team === 1 ? WARRIOR_SPEED : -WARRIOR_SPEED;
+                break;
+            case UNITS.CHARIOT:
+                speed = team === 1 ? CHARIOT_SPEED : -CHARIOT_SPEED;
+                break;
+            case UNITS.SPY:
+                speed = team === 1 ? SPY_SPEED : -SPY_SPEED;
+                break;
+            case UNITS.WIZARD:
+                speed = team === 1 ? WIZARD_SPEED : -WIZARD_SPEED;
+                break;
+        }
+        return speed;
     },
 
     warriorsCollision: function (a, b) {
@@ -125,7 +169,7 @@ var playState = {
         this.background.enableBody = true;
         game.add.sprite(0, 0, 'background', 0, this.background);
         this.players = {
-            one: {
+            first: {
                 spawnPos: {
                     x: null,
                     y: null
@@ -141,10 +185,10 @@ var playState = {
             }
         };
 
-        this.players.one.attack = game.add.group();
-        this.players.one.attack.enableBody = true;
+        this.players.first.attack = game.add.group();
+        this.players.first.attack.enableBody = true;
         this.players.second.attack = game.add.group();
-        this.players.one.attack.enableBody = true;
+        this.players.first.attack.enableBody = true;
 
 
         for (var i = 0; i < level.length; i++) {
@@ -156,8 +200,8 @@ var playState = {
                         break;
                     case '1':
                         console.log("Spawn position of 1: " + 20 * i + " " + 20 * j);
-                        this.players.one.spawnPos.x = 20 * i;
-                        this.players.one.spawnPos.y = 20 * j;
+                        this.players.first.spawnPos.x = 20 * i;
+                        this.players.first.spawnPos.y = 20 * j;
                         break;
                     case '2':
                         console.log("Spawn position of 2: " + 20 * i + " " + 20 * j);
