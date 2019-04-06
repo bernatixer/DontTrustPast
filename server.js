@@ -5,8 +5,9 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 // MAIN STACK
-// { player: ID, action: 'RECRUIT || ATTACK', units: 15, when: TIMESTAMP }
-var actions = [];
+// { player: ID, action: 'RECRUIT || ATTACK', units: 15, when: Math.floor(Date.now() / 1000) }
+var actionsFirst = [];
+var actionsSecond = [];
 
 // EACH ROUND: initResources + round * multiplyPerRound
 var initResources = 20;
@@ -139,6 +140,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'first', data});
         io.to('first').emit('myStatus', firstPlayer);
         // AFEGIR ACCIÓ
+        actionsFirst.push({ action: 'attack', when: Math.floor(Date.now() / 1000) });
       }
     } else if (playerPos === 'second') {
       if (secondPlayer[data.type] - 1 >= 0) {
@@ -146,6 +148,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'second', data});
         io.to('second').emit('myStatus', secondPlayer);
         // AFEGIR ACCIÓ
+        actionsSecond.push({ action: 'attack', when: Math.floor(Date.now() / 1000) });
       }
     }
   });
@@ -190,6 +193,7 @@ io.on('connection', function(socket) {
         firstPlayer['iron'] -= unitCost['iron']*data.num;
         firstPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
+        actionsFirst.push({ action: 'recruit', when: Math.floor(Date.now() / 1000) });
       }
     } else if (playerPos === 'second') {
       if (unitCost['wood']*data.num <= secondPlayer['wood'] && unitCost['iron']*data.num <= secondPlayer['iron']) {
@@ -197,6 +201,7 @@ io.on('connection', function(socket) {
         secondPlayer['iron'] -= unitCost['iron']*data.num;
         secondPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
+        actionsSecond.push({ action: 'recruit', when: Math.floor(Date.now() / 1000) });
       }
     }
   });
