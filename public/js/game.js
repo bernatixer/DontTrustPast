@@ -23,6 +23,8 @@ var playState = {
         game.load.image('chariot2', 'assets/Warriors/Chariot2_32.png');
         game.load.image('spy1', 'assets/Warriors/Spy1_32.png');
         game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
+        game.load.image('wizard1', 'assets/Warriors/Wizard1_32.png');
+        game.load.image('wizard2', 'assets/Warriors/Wizard2_32.png');
 
 
         if (!game.device.desktop) {
