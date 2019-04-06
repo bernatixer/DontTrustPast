@@ -37,6 +37,10 @@ var startState = {
   wizard: 0,
 };
 
+// CASTLE LIFE
+var firsCastleLife = 30;
+var secondCastleLife = 30;
+
 // EMPTY || WAITING || PLAYING
 var round = 0;
 var gameState = 'EMPTY';
@@ -139,6 +143,42 @@ io.on('connection', function(socket) {
         // AFEGIR ACCIÓ
       }
     }
+  });
+
+  socket.on('attackCastle', type => {
+    console.log(firsCastleLife);
+    console.log(secondCastleLife);
+    if (type === 'attack') {
+      if (playerPos === 'first') {
+        secondCastleLife -= 1;
+        if (secondCastleLife <= 0) {
+          io.emit('endGame', 'first');
+        }
+      } else if (playerPos === 'second') {
+        firstCastleLife -= 1;
+        if (firstCastleLife <= 0) {
+          io.emit('endGame', 'second');
+        }
+      }
+    // } else if (type === 'deffense') {
+    //   //
+    } else if (type === 'spy') {
+      if (playerPos === 'first') {
+        if (secondPlayer['spy'] === 0) {
+          firstPlayer['wizard'] = 1;
+        } else {
+          secondPlayer['spy'] -= 1;
+        }
+      } else if (playerPos === 'second') {
+        if (firstPlayer['spy'] === 0) {
+          secondPlayer['wizard'] = 1;
+        } else {
+          firstPlayer['spy'] -= 1;
+        }
+      }
+    }
+    io.to('first').emit('myStatus', firstPlayer);
+    io.to('second').emit('myStatus', secondPlayer);
   });
 
   socket.on('recruit', data => {

@@ -120,6 +120,7 @@ var playState = {
     },
 
     castleCollision: function (x) { // x = castle That gets reckt
+        // socket.emit('attackCastle', type);
         console.log("castleColision");
         if (x === 1) {
             this.players.first.castleHealth--;

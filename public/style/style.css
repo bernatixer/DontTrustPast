@@ -61,5 +61,5 @@ button, input[type="submit"], input[type="reset"] {
 	font-family: 'Roboto Condensed', sans-serif;
 	width:30%;
 	justify-content: center;
-	background-color: #FBC02D;
+	/* background-color: #FBC02D; */
 }

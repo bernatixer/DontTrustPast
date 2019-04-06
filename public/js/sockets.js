@@ -6,6 +6,7 @@ var status = {};
 socket.on('cantPlay', () => message('Two players already playing'));
 socket.on('identification', identity => id = identity);
 socket.on('startGame', () => canPlay = true);
+socket.on('endGame', who => alert('PLAYER WON: ', who));
 socket.on('unitCosts', function(costs) {
   unitCosts = JSON.stringify(costs);
 });
@@ -17,6 +18,9 @@ socket.on('myStatus', function(stat) {
   document.getElementById('attack').innerHTML = stat.attack;
   document.getElementById('deffense').innerHTML = stat.deffense;
   document.getElementById('spy').innerHTML = stat.spy;
+  if (stat.wizard === 1) {
+    message('You can now train a Wizard');
+  }
 });
 socket.on('attack', function(data) {
   console.log(data);
