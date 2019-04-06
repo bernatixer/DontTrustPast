@@ -9,7 +9,7 @@ socket.on('identification', identity => {
   message(identity);
 });
 socket.on('startGame', () => canPlay = true);
-socket.on('endGame', who => alert('PLAYER WON: ' + who));
+socket.on('endGame', who => location.href = who + '.html');
 socket.on('unitCosts', function(costs) {
   unitCosts = JSON.stringify(costs);
 });
@@ -27,7 +27,6 @@ socket.on('myStatus', function(stat) {
   }
 });
 socket.on('attack', function(data) {
-  console.log(data);
   let unit;
   if (data.data.type === 'attack') unit = UNITS.CHARIOT;
   if (data.data.type === 'deffense') unit = UNITS.WARRIOR;
