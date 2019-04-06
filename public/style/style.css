@@ -11,7 +11,7 @@
 	background-color: #E3D1FF;
 }
 
-.header  span {
+.header, span {
 	font-family: 'Roboto Mono', monospace;
 	font-weight: 700;
 }
@@ -54,12 +54,12 @@ button, input[type="submit"], input[type="reset"] {
 }
 
 .resources{
-	width:25%;
+	width:20%;
 }
 
 .messages{
 	font-family: 'Roboto Condensed', sans-serif;
-	width:25%;
+	width:30%;
 	justify-content: center;
-	background-color: #F44336;
+	background-color: #FBC02D;
 }

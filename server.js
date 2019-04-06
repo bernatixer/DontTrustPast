@@ -9,7 +9,7 @@ var port = process.env.PORT || 3000;
 var actions = [];
 
 // EACH ROUND: initResources + round * multiplyPerRound
-var initResources = 0;
+var initResources = 20;
 var multiplyPerRound = 0;
 var roundTime = 1; // IN SECONDS
 
@@ -28,12 +28,12 @@ var unitCosts = {
 
 // STARTING CONSTANTS
 var startState = {
-  wood: 0,
-  iron: 0,
-  food: 100,
+  wood: 100,
+  iron: 100,
+  food: 500,
   attack: 10,
   deffense: 10,
-  spy: 100,
+  spy: 0,
   wizard: 0,
 };
 

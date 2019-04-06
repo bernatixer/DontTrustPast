@@ -16,7 +16,7 @@ socket.on('myStatus', function(stat) {
   document.getElementById('food').innerHTML = stat.food;
   document.getElementById('attack').innerHTML = stat.attack;
   document.getElementById('deffense').innerHTML = stat.deffense;
-  document.getElementById('spy').innerHTML = stat.spy;
+  document.getElementById('spies').innerHTML = stat.spy;
 });
 socket.on('attack', function(data) {
   console.log(data);

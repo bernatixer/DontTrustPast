@@ -5,7 +5,8 @@ var playState = {
         game.load.image('background', 'assets/Background_purple_mountains.png');
 
         game.load.spritesheet('player', 'assets/player.png', 28, 22);
-        game.load.image('wall', 'assets/wall.png');
+        game.load.image('grass', 'assets/grass.png');
+        game.load.image('grass2', 'assets/grass2.png');
         game.load.image('ground', 'assets/ground.png');
         game.load.image('dust', 'assets/dust.png');
         game.load.image('blood', 'assets/blood.png');
@@ -193,8 +194,10 @@ var playState = {
             for (var j = 0; j < level[i].length; j++) {
                 switch (level[i][j]) {
                     case 'x':
-                        let wallSprite = game.add.sprite(20 * j, 20 * i, 'wall', 0, this.level);
-                        wallSprite.tint = 0x41aa31;
+                        game.add.sprite(20 * j, 20 * i, 'grass', 0, this.level);
+                        break;
+                    case 'y':
+                        game.add.sprite(20 * j, 20 * i, 'grass2', 0, this.level);
                         break;
                     case '1':
                         console.log("Spawn position of 1: " + 20 * i + " " + 20 * j);
