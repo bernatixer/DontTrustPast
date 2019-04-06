@@ -52,9 +52,7 @@ var playState = {
 
         this.loadLevel();
         this.setParticles();
-
-        this.spawnPlayer();
-    },
+        },
 
     update: function () {
 
