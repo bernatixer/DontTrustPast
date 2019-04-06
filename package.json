@@ -4,7 +4,8 @@
   "description": "Do not trust the past, a simple web-browser strategy game",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {
