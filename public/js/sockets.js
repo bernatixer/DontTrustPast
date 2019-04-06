@@ -20,7 +20,7 @@ socket.on('myStatus', function(stat) {
   document.getElementById('iron').innerHTML = stat.iron;
   document.getElementById('food').innerHTML = stat.food;
   document.getElementById('attack').innerHTML = stat.attack;
-  document.getElementById('deffense').innerHTML = stat.deffense;
+  document.getElementById('defense').innerHTML = stat.defense;
   document.getElementById('spy').innerHTML = stat.spy;
   if (!hadWizard && stat.wizard === 1) {
     message('You can now train a Wizard');
@@ -29,7 +29,7 @@ socket.on('myStatus', function(stat) {
 socket.on('attack', function(data) {
   let unit;
   if (data.data.type === 'attack') unit = UNITS.CHARIOT;
-  if (data.data.type === 'deffense') unit = UNITS.WARRIOR;
+  if (data.data.type === 'defense') unit = UNITS.WARRIOR;
   if (data.data.type === 'spy') unit = UNITS.SPY;
   if (data.attacker === 'first') {
     playState.spawnUnit(1, unit);
