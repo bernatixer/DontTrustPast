@@ -25,6 +25,25 @@ const getUnitSpeed = function (team, type) {
 };
 
 
-const getRandomUnit = function() {
-    return UNITS[Object.keys(UNITS)[Math.floor(Math.random()*Object.keys(UNITS).length)]];
+const getRandomUnit = function () {
+    return UNITS[Object.keys(UNITS)[Math.floor(Math.random() * Object.keys(UNITS).length)]];
+};
+
+const getSection = function (type) {
+    let section;
+    switch (type) {
+        case UNITS.WARRIOR:
+            section = "defend";
+            break;
+        case UNITS.CHARIOT:
+            section = "attack";
+            break;
+        case UNITS.SPY:
+            section = "spies";
+            break;
+        case UNITS.WIZARD:
+            section = "wizards";
+            break;
+    }
+    return section;
 };
