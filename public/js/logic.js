@@ -9,7 +9,7 @@ function recruit(type) {
     socket.emit('recruit', {type, num});
     status = JSON.stringify(tempStatus);
   } else {
-    alert('no tens recursos suficients')
+    message('Not enough resources');
   }
 }
 

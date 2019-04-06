@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     <script type="text/javascript" src="js/phaser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script type="text/javascript" src="js/messages.js"></script>
     <script type="text/javascript" src="js/sockets.js"></script>
     <script type="text/javascript" src="js/level.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
@@ -34,7 +35,7 @@
           <span><i class="fas fa-drumstick-bite"></i> FOOD: </span><b id="food"></b><br>
         </div>
       </div>
-      <div class="messages">You can't recruit more troops</div>
+      <div class="messages" id="message"></div>
     </div>
     <div class="body" id="joc" />
   </body>

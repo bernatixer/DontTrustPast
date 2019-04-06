@@ -3,7 +3,7 @@ var id;
 var unitCosts = {};
 var canPlay = false;
 var status = {};
-socket.on('cantPlay', () => alert('TWO PLAYERS ALREADY PLAYING'));
+socket.on('cantPlay', () => message('Two players already playing'));
 socket.on('identification', identity => id = identity);
 socket.on('startGame', () => canPlay = true);
 socket.on('unitCosts', function(costs) {
