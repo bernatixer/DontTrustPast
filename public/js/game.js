@@ -41,28 +41,56 @@ var playState = {
 		this.player.body.gravity.y = 600;
 		this.player.animations.add('idle', [3, 4, 5, 4], 5, true);
 		this.player.body.setSize(20, 20, 0, 0);
-		this.player.anchor.setTo(0.5, 0.5);
 		this.playerDead = false;
+
+		this.players = {
+			one: {
+				spawnPos:{
+					x:null,
+					y:null
+				},
+				attack: []
+			},
+			second: {
+				spawnPos:{
+					x:null,
+					y:null
+				},
+				attack: []
+			}
+		}
 
 		this.loadLevel();
 		this.setParticles();
 
-		this.spawnPlayer();
+		this.spawnPlayer();		
 	},
 
 	update: function() {
 		game.physics.arcade.collide(this.player, this.level);
-		game.physics.arcade.overlap(this.player, this.enemy, this.spawnPlayer, null, this);
-		game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
+		//game.physics.arcade.overlap(this.player, this.enemy, this.spawnPlayer, null, this);
+		//game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
 
 		this.inputs();
 
 		this.exp.forEachAlive(function(p){
 			p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
-		}, this);
+		}, this);	
+
+		this.players.one.attack.forEach(element => {
+			game.physics.arcade.collide(element, this.level);
+		});
+
+		this.players.second.attack.forEach(element => {
+			game.physics.arcade.collide(element, this.level);
+		});
+
 	},
 
 	inputs: function() {
+
+		var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 		if (this.cursor.left.isDown || this.moveLeft) {
 			this.player.body.velocity.x = -200;
 			this.player.frame = 2;
@@ -94,6 +122,40 @@ var playState = {
 		if (this.cursor.up.isDown) {
 			this.jumpPlayer();
 		}
+
+		if (space.isDown)
+    	{
+			console.log("Space down");
+			this.spawnWarrior(1);
+			this.spawnWarrior(2);
+		}
+	},
+	spawnWarrior: function(x){
+		if(x == 1){
+			var tmp;
+			tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'player');
+			tmp.tint = 0x229954;
+			tmp.anchor.setTo(0.5, 0.5);
+			game.physics.arcade.enable(tmp);
+			tmp.body.gravity.y = 600;
+			tmp.animations.add('idle', [3, 4, 5, 4], 5, true);
+			tmp.body.setSize(20, 20, 0, 0);
+			tmp.body.velocity.x = 50;
+
+			this.players.one.attack.push(tmp);
+		}else{
+			var tmp;
+			tmp = game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'player');
+			tmp.tint = 0x2471A3;
+			tmp.anchor.setTo(0.5, 0.5);
+			game.physics.arcade.enable(tmp);
+			tmp.body.gravity.y = 600;
+			tmp.animations.add('idle', [3, 4, 5, 4], 5, true);
+			tmp.body.setSize(20, 20, 0, 0);
+			tmp.body.velocity.x = -50;
+
+			this.players.second.attack.push(tmp);
+		}
 	},
 
 	jumpPlayer: function() {
@@ -112,14 +174,14 @@ var playState = {
 			this.exp.start(true, 300, null, 20);
 
 			this.shakeEffect(this.level);
-			this.shakeEffect(this.enemy);
+			//this.shakeEffect(this.enemy);
 
 			this.deadSound.play();
 		}
 
 		this.player.scale.setTo(0, 0);
 		game.add.tween(this.player.scale).to({x:1, y:1}, 300).start();
-		this.player.reset(250, 50);
+		//this.player.reset(250, 50);
 
 		this.hasJumped = true;
 		this.playerDead = true;
@@ -127,7 +189,7 @@ var playState = {
 		this.moveLeft = false;
 		this.moveRight = false;
 
-		this.addCoins();
+		//this.addCoins();
 	},
 
 	loadLevel: function(coins, enemies) {
@@ -142,14 +204,22 @@ var playState = {
 			  wallSprite.tint = 0x41aa31;
           } else if (level[i][j] == '!') {
               this.enemy = game.add.sprite(20*j, 20*i, 'enemy');
-          }
+          } else if (level[i][j] == '1'){
+			console.log("Spawn position of 1: " + 20*i +" " + 20*j);
+			this.players.one.spawnPos.x = 20*i;
+			this.players.one.spawnPos.y = 20*j;
+		  } else if (level[i][j] == '2'){
+			console.log("Spawn position of 2: " + 20*i +" " + 20*j);
+			this.players.second.spawnPos.x = 20*i;
+			this.players.second.spawnPos.y = 20*j;
+		  }
       }
     }
 		this.level.setAll('body.immovable', true);
-		game.physics.arcade.enable(this.enemy);
+		//game.physics.arcade.enable(this.enemy);
 	},
 
-	addCoins: function() {
+	/*addCoins: function() {
 		if (!this.coins) {
 			this.coins = game.add.group();
 			this.coins.enableBody = true;
@@ -177,7 +247,7 @@ var playState = {
 		game.add.tween(b.scale).to({x:0}, 150).start();
 		game.add.tween(b).to({y:50}, 150).start();
 		this.coinSound.play();
-	},
+	},*/
 
 	setParticles: function() {
 		this.dust = game.add.emitter(0, 0, 20);
