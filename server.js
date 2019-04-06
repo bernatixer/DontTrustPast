@@ -10,33 +10,28 @@ var gameState = 'EMPTY';
 
 // EACH ROUND: initResources + round * multiplyPerRound
 var initResources = 10;
-var multiplyPerRound = 2;
+var multiplyPerRound = 1;
 
 // HOW MUCH RESOURCES EACH UNIT EAT PER ROUND
 var feedAttackUnits = 1;
 var feedDefenseUnits = 1;
 var feedSpyUnits = 2;
+var feedSum = feedAttackUnits + feedDefenseUnits + feedSpyUnits;
 
-var firstPlayer = {
+// STARTING CONSTANTS
+var startState = {
   id: '',
   wood: 200,
   iron: 200,
-  food: 500,
-  attack: 0,
-  defense: 0,
-  spies: 0,
+  food: 100,
+  attack: 10,
+  defense: 10,
+  spies: 100,
   wizard: 0,
 };
-var secondPlayer = {
-  id: '',
-  wood: 200,
-  iron: 200,
-  food: 500,
-  attack: 0,
-  defense: 0,
-  spies: 0,
-  wizard: 0,
-};
+
+var firstPlayer = startState;
+var secondPlayer = startState;
 
 app.use(express.static('public'))
 app.get('/', (req, res) => res.send('OK'));
@@ -60,7 +55,13 @@ function feedUnits() {
   troopsInCastle += feedSpyUnits*firstPlayer['spies'];
   firstPlayer['food'] -= troopsInCastle;
   if (firstPlayer['food'] < 0) {
-    //
+    let A = firstPlayer['attack'] * feedAttackUnits/feedSum;
+    let B = firstPlayer['defense'] * feedDefenseUnits/feedSum;
+    let C = firstPlayer['spies'] * feedSpyUnits/feedSum;
+    let X = (A+B+C)/(-firstPlayer['food']);
+    firstPlayer['attack'] -= Math.floor((Math.random()*A) + Math.floor(A/2));
+    firstPlayer['defense'] -= Math.floor((Math.random()*B) + Math.floor(B/2));
+    firstPlayer['spies'] -= Math.floor((Math.random()*C) + Math.floor(C/2));
     firstPlayer['food'] = 0;
   }
 }
@@ -76,13 +77,13 @@ setInterval(executeRound, 5*1000);
 io.on('connection', function(socket) {
   if (gameState === 'EMPTY') {
     socket.join('first');
-    firstPlayer = socket.id;
+    firstPlayer['id'] = socket.id;
     gameState = 'WAITING';
     io.emit('myStatus', firstPlayer);
     socket.emit('identification', socket.id);
   } else if (gameState === 'WAITING') {
     socket.join('second');
-    secondPlayer = socket.id;
+    secondPlayer['id'] = socket.id;
     gameState = 'PLAYING';
     socket.emit('identification', socket.id);
     io.emit('myStatus', secondPlayer);

@@ -43,9 +43,6 @@ var playState = {
 		game.sound.mute = true;
 
 		this.deadSound = game.add.audio('dead', 0.1);
-		this.jumpSound = game.add.audio('jump', 0.1);
-		this.dustSound = game.add.audio('dust', 0.1);
-		this.coinSound = game.add.audio('coin', 0.1);
 
 		this.player = game.add.sprite(250, 50, 'player');
 		this.player.anchor.setTo(0.5, 0.5);
@@ -80,7 +77,7 @@ var playState = {
 		this.loadLevel();
 		this.setParticles();
 
-		this.spawnPlayer();		
+		this.spawnPlayer();
 	},
 
 	update: function() {
@@ -92,7 +89,7 @@ var playState = {
 
 		this.exp.forEachAlive(function(p){
 			p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
-		}, this);	
+		}, this);
 
 		game.physics.arcade.collide(this.players.one.attack, this.level);
 		game.physics.arcade.collide(this.players.second.attack, this.level);
@@ -123,7 +120,6 @@ var playState = {
 
 		if (this.player.body.touching.down && this.player.y > 100) {
 			if (this.hasJumped) {
-				this.dustSound.play();
 				this.dust.x = this.player.x;
 				this.dust.y = this.player.y+10;
 				this.dust.start(true, 300, null, 8);
@@ -173,7 +169,6 @@ var playState = {
 		if (this.player.body.touching.down && this.player.y > 100) {
 			game.sound.mute = false;
 			this.hasJumped = true;
-			this.jumpSound.play();
 			this.player.body.velocity.y = -220;
 		}
 	},
