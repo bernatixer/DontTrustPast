@@ -6,6 +6,8 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style/style.css" />
     <meta name="viewport" content="initial-scale=1.0" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700,900" rel="stylesheet">
     <script type="text/javascript" src="js/phaser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script type="text/javascript" src="js/sockets.js"></script>
@@ -15,13 +17,20 @@
   </head>
   <body>
     <div class="header">
-      WOOD: <b id="wood"></b><br>
-      IRON: <b id="iron"></b><br>
-      FOOD: <b id="food"></b><br>
-      <br>
-      <button type="button" onclick="attack('attack')">ATTACK</button> <button type="button" onclick="recruit('attack')">RECRUIT</button> ATTACK: <b id="attack"></b><br>
-      <button type="button" onclick="attack('deffense')">ATTACK</button> <button type="button" onclick="recruit('deffense')">RECRUIT</button> DEFFENSE: <b id="deffense"></b><br>
-      <button type="button" onclick="attack('spy')">ATTACK</button> <button type="button" onclick="recruit('spy')">RECRUIT</button> SPIES: <b id="spy"></b>
+      <div class="recruiters">
+        <div>
+          <button class="recruit" onclick="attack('attack')"><i class="fab fa-affiliatetheme"></i></button><button class="recruit" onclick="recruit('attack')"><i class="fas fa-plus"></i></button> <span> ATTACK: </span>  <b id="attack"></b><br>
+          <button class="recruit" onclick="attack('deffense')"><i class="fab fa-affiliatetheme"></i></button><button class="recruit" onclick="recruit('deffense')"><i class="fas fa-plus"></i></button> <span> DEFFENSE: </span>  <b id="deffense"></b><br>
+          <button class="recruit" onclick="attack('spies')"><i class="fab fa-affiliatetheme"></i></button><button class="recruit" onclick="recruit('spy')"><i class="fas fa-plus"></i></button> <span> SPIES: </span>  <b id="spies"></b>
+        </div>
+      </div>
+      <div class="resources">
+        <div>
+          <span> WOOD: </span>  <b id="wood"></b><br>
+          <span> IRON: </span>  <b id="iron"></b><br>
+          <span> FOOD: </span>  <b id="food"></b><br>
+        </div>
+      </div>
     </div>
     <div class="body" id="joc" />
   </body>
