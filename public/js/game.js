@@ -120,19 +120,21 @@ var playState = {
         this.wizardDown = wizard.isDown;
     },
 
-    castleCollision: function (x,y) { // x = castle That gets reckt
+    castleCollision: function (x, y) { // x = castle That gets reckt
         let stringType = '';
         if (y === UNITS.CHARIOT) stringType = 'attack';
         if (y === UNITS.SPY) stringType = 'spy';
         socket.emit('attackCastle', stringType);
-        if (x === 1) {
-            this.players.first.castleHealth--;
-            if (this.players.first.castleHealth <= 10) this.players.first.castle.loadTexture("castle1L");
-            else if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
-        } else {
-            this.players.second.castleHealth--;
-            if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle2L");
-            else if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
+        if (y === UNITS.SPY) {
+            if (x === 1) {
+                this.players.first.castleHealth--;
+                if (this.players.first.castleHealth <= 10) this.players.first.castle.loadTexture("castle1L");
+                else if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
+            } else {
+                this.players.second.castleHealth--;
+                if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle2L");
+                else if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
+            }
         }
     },
 
