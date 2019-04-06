@@ -1,14 +1,5 @@
-function recruitAttack() {
+function recruit(type) {
   var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitAttack', num);
-}
-
-function recruitDeffense() {
-  var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitDeffense', num);
-}
-
-function recruitSpies() {
-  var num = 1; // AGAFAR-HO D'UN INPUT
-  socket.emit('recruitSpies', num);
+  // LOGICA DE COMPROVAR
+  socket.emit('recruit', {type, num});
 }

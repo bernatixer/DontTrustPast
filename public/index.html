@@ -11,6 +11,7 @@
     <script type="text/javascript" src="js/sockets.js"></script>
     <script type="text/javascript" src="js/level.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/logic.js"></script>
   </head>
   <body>
     <div class="header">
@@ -18,9 +19,9 @@
       IRON: <b id="iron"></b><br>
       FOOD: <b id="food"></b><br>
       <br>
-      <button type="button" onclick="recruitAttack()">RECRUIT</button> ATTACK: <b id="attack"></b><br>
-      <button type="button" onclick="recruitDeffense()">RECRUIT</button> DEFFENSE: <b id="deffense"></b><br>
-      <button type="button" onclick="recruitSpies()">RECRUIT</button> SPIES: <b id="spies"></b>
+      <button type="button" onclick="recruit('attack')">RECRUIT</button> ATTACK: <b id="attack"></b><br>
+      <button type="button" onclick="recruit('deffense')">RECRUIT</button> DEFFENSE: <b id="deffense"></b><br>
+      <button type="button" onclick="recruit('spy')">RECRUIT</button> SPIES: <b id="spy"></b>
     </div>
     <div class="body" id="joc" />
   </body>
