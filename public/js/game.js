@@ -151,7 +151,7 @@ var playState = {
         // this.shakeEffect(this.background);
     },
 
-    loadLevel: function (coins, enemies) {
+    loadLevel: function () {
         this.background = game.add.group();
         this.level = game.add.group();
         this.level.enableBody = true;
