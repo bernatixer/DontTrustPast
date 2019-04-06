@@ -49,16 +49,21 @@ var playState = {
 					x:null,
 					y:null
 				},
-				attack: []
+				attack: null
 			},
 			second: {
 				spawnPos:{
 					x:null,
 					y:null
 				},
-				attack: []
+				attack: null
 			}
 		}
+
+		this.players.one.attack = game.add.group();
+		this.players.one.attack.enableBody = true;
+		this.players.second.attack = game.add.group();
+		this.players.one.attack.enableBody = true;
 
 		this.loadLevel();
 		this.setParticles();
@@ -77,13 +82,9 @@ var playState = {
 			p.alpha = game.math.clamp(p.lifespan / 100, 0, 1);
 		}, this);	
 
-		this.players.one.attack.forEach(element => {
-			game.physics.arcade.collide(element, this.level);
-		});
-
-		this.players.second.attack.forEach(element => {
-			game.physics.arcade.collide(element, this.level);
-		});
+		game.physics.arcade.collide(this.players.one.attack, this.level);
+		game.physics.arcade.collide(this.players.second.attack, this.level);
+		game.physics.arcade.overlap(this.players.one.attack,this.players.second.attack,this.warriorsCollision,null,this);
 
 	},
 
@@ -133,29 +134,27 @@ var playState = {
 	spawnWarrior: function(x){
 		if(x == 1){
 			var tmp;
-			tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'player');
+			tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'player',0,this.players.one.attack);
 			tmp.tint = 0x229954;
 			tmp.anchor.setTo(0.5, 0.5);
 			game.physics.arcade.enable(tmp);
 			tmp.body.gravity.y = 600;
-			tmp.animations.add('idle', [3, 4, 5, 4], 5, true);
 			tmp.body.setSize(20, 20, 0, 0);
 			tmp.body.velocity.x = 50;
-
-			this.players.one.attack.push(tmp);
 		}else{
 			var tmp;
-			tmp = game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'player');
+			tmp = game.add.sprite(this.players.second.spawnPos.y, this.players.second.spawnPos.x, 'player',0,this.players.second.attack);
 			tmp.tint = 0x2471A3;
 			tmp.anchor.setTo(0.5, 0.5);
 			game.physics.arcade.enable(tmp);
 			tmp.body.gravity.y = 600;
-			tmp.animations.add('idle', [3, 4, 5, 4], 5, true);
 			tmp.body.setSize(20, 20, 0, 0);
 			tmp.body.velocity.x = -50;
-
-			this.players.second.attack.push(tmp);
 		}
+	},
+
+	warriorsCollision: function(a,b){
+
 	},
 
 	jumpPlayer: function() {
