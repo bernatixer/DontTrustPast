@@ -55,12 +55,23 @@ var playState = {
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
 
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.castle, function (a, b) {
-            this.castleCollision(2);
+            this.castleCollision(2,UNITS.CHARIOT);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
         game.physics.arcade.overlap(this.players.second.attack, this.players.first.castle, function (a, b) {
-            this.castleCollision(1);
+            this.castleCollision(1,UNITS.CHARIOT);
+            b.body.enable = false;
+            game.add.tween(b.scale).to({x: 0}, 1).start();
+        }, null, this);
+
+        game.physics.arcade.overlap(this.players.first.spies, this.players.second.castle, function (a, b) {
+            this.castleCollision(2,UNITS.SPY);
+            b.body.enable = false;
+            game.add.tween(b.scale).to({x: 0}, 1).start();
+        }, null, this);
+        game.physics.arcade.overlap(this.players.second.spies, this.players.first.castle, function (a, b) {
+            this.castleCollision(1,UNITS.SPY);
             b.body.enable = false;
             game.add.tween(b.scale).to({x: 0}, 1).start();
         }, null, this);
@@ -119,7 +130,7 @@ var playState = {
         this.wizardDown = wizard.isDown;
     },
 
-    castleCollision: function (x) { // x = castle That gets reckt
+    castleCollision: function (x,y) { // x = castle That gets reckt
         // socket.emit('attackCastle', type);
         console.log("castleColision");
         if (x === 1) {
