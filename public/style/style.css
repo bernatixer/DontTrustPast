@@ -7,8 +7,47 @@
 
 .header {
 	height: 20vh;
+	position: relative;
+	background-color: #E3D1FF;	
+}
+
+.header  span {
+	font-family: 'Playfair Display', serif;
+	font-weight: 700;
 }
 
 .body {
 	height: 80vh;
+}
+
+.recruit{
+	display:inline-flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50px;
+	width: 25px;
+	height: 25px;
+	margin: 5px 5px;
+	background-color: #744C8C;
+}
+
+button, input[type="submit"], input[type="reset"] {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+
+.recruiters,.resources{
+	display: inline-block;
+	width: 50%;
+	height: 100%;
+	float: left;
+
+	display: flex;
+	align-items: center;
 }
