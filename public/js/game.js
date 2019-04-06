@@ -10,6 +10,18 @@ var playState = {
 		game.load.image('enemy', 'assets/enemy.png');
 		game.load.image('coin', 'assets/coin.png');
 
+		game.load.image('castle1H', 'assets/Castles/Castle1H.png');
+		game.load.image('castle1M', 'assets/Castles/Castle1M.png');
+		game.load.image('castle1L', 'assets/Castles/Castle1L.png');
+		game.load.image('castle2H', 'assets/Castles/Castle2H.png');
+		game.load.image('castle2M', 'assets/Castles/Castle2M.png');
+		game.load.image('castle2L', 'assets/Castles/Castle2L.png');
+
+		game.load.image('warrior1', 'assets/Warriors/Warrior1.png');
+		game.load.image('warrior2', 'assets/Warriors/Warrior2.png');
+		game.load.image('chariot1', 'assets/Warriors/Chariot1.png');
+		game.load.image('chariot2', 'assets/Warriors/Chariot2.png');
+
 		if (!game.device.desktop) {
 			game.load.image('right', 'assets/right.png');
 			game.load.image('left', 'assets/left.png');
@@ -132,7 +144,7 @@ var playState = {
 		}
 	},
 	spawnWarrior: function(x){
-		if(x == 1){
+		if(x === 1){
 			var tmp;
 			tmp = game.add.sprite(this.players.one.spawnPos.y, this.players.one.spawnPos.x, 'player',0,this.players.one.attack);
 			tmp.tint = 0x229954;
@@ -198,21 +210,44 @@ var playState = {
 
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-          if (level[i][j] == 'x') {
-			  var wallSprite = game.add.sprite(20*j, 20*i, 'wall', 0, this.level);
-			  wallSprite.tint = 0x41aa31;
-          } else if (level[i][j] == '!') {
-              this.enemy = game.add.sprite(20*j, 20*i, 'enemy');
-          } else if (level[i][j] == '1'){
-			console.log("Spawn position of 1: " + 20*i +" " + 20*j);
-			this.players.one.spawnPos.x = 20*i;
-			this.players.one.spawnPos.y = 20*j;
-		  } else if (level[i][j] == '2'){
-			console.log("Spawn position of 2: " + 20*i +" " + 20*j);
-			this.players.second.spawnPos.x = 20*i;
-			this.players.second.spawnPos.y = 20*j;
+		  switch (level[i][j]) {
+			  case 'x':
+				  var wallSprite = game.add.sprite(20 * j, 20 * i, 'wall', 0, this.level);
+				  wallSprite.tint = 0x41aa31;
+				  break;
+			  case '!':
+				  this.enemy = game.add.sprite(20 * j, 20 * i, 'enemy');
+				  break;
+			  case '1':
+				  console.log("Spawn position of 1: " + 20 * i + " " + 20 * j);
+				  this.players.one.spawnPos.x = 20 * i;
+				  this.players.one.spawnPos.y = 20 * j;
+				  break;
+			  case '2':
+				  console.log("Spawn position of 2: " + 20 * i + " " + 20 * j);
+				  this.players.second.spawnPos.x = 20 * i;
+				  this.players.second.spawnPos.y = 20 * j;
+				  break;
+			  case 'H':
+				  game.add.sprite(20 * j, 20 * i, 'castle1H', 0, this.level);
+				  break;
+			  case 'M':
+				  game.add.sprite(20 * j, 20 * i, 'castle1M', 0, this.level);
+				  break;
+			  case 'L':
+				  game.add.sprite(20 * j, 20 * i, 'castle1L', 0, this.level);
+				  break;
+			  case 'h':
+				  game.add.sprite(20 * j, 20 * i, 'castle2H', 0, this.level);
+				  break;
+			  case 'm':
+				  game.add.sprite(20 * j, 20 * i, 'castle2M', 0, this.level);
+				  break;
+			  case 'l':
+				  game.add.sprite(20 * j, 20 * i, 'castle2L', 0, this.level);
+				  break;
 		  }
-      }
+	  }
     }
 		this.level.setAll('body.immovable', true);
 		//game.physics.arcade.enable(this.enemy);
