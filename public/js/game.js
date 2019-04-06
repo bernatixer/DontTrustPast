@@ -36,11 +36,6 @@ var playState = {
             game.load.image('left', 'assets/left.png');
         }
         game.load.image('jump', 'assets/jump.png');
-
-        // game.load.audio('dead', ['assets/dead.wav', 'assets/dead.mp3']);
-        // game.load.audio('dust', ['assets/dust.wav', 'assets/dust.mp3']);
-        // game.load.audio('jump', ['assets/jump.wav', 'assets/jump.mp3']);
-        // game.load.audio('coin', ['assets/coin.wav', 'assets/coin.mp3']);
     },
 
     create: function () {
@@ -56,7 +51,6 @@ var playState = {
         },
 
     update: function () {
-
         this.inputs();
 
         this.exp.forEachAlive(function (p) {
@@ -66,11 +60,9 @@ var playState = {
         game.physics.arcade.collide(this.players.first.attack, this.level);
         game.physics.arcade.collide(this.players.second.attack, this.level);
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
-
     },
 
     inputs: function () {
-
         let space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         let attack = game.input.keyboard.addKey(Phaser.KeyCode.A);
         let spy = game.input.keyboard.addKey(Phaser.KeyCode.S);
@@ -156,8 +148,7 @@ var playState = {
         game.add.tween(a.scale).to({x: 0}, 1).start();
         game.add.tween(b.scale).to({x: 0}, 1).start();
 
-        this.shakeEffect(this.background);
-
+        // this.shakeEffect(this.background);
     },
 
     loadLevel: function (coins, enemies) {
@@ -189,7 +180,6 @@ var playState = {
         this.players.second.attack = game.add.group();
         this.players.first.attack.enableBody = true;
 
-
         for (var i = 0; i < level.length; i++) {
             for (var j = 0; j < level[i].length; j++) {
                 switch (level[i][j]) {
@@ -200,12 +190,10 @@ var playState = {
                         game.add.sprite(20 * j, 20 * i, 'grass2', 0, this.level);
                         break;
                     case '1':
-                        console.log("Spawn position of 1: " + 20 * i + " " + 20 * j);
                         this.players.first.spawnPos.x = 20 * i;
                         this.players.first.spawnPos.y = 20 * j;
                         break;
                     case '2':
-                        console.log("Spawn position of 2: " + 20 * i + " " + 20 * j);
                         this.players.second.spawnPos.x = 20 * i;
                         this.players.second.spawnPos.y = 20 * j;
                         break;
