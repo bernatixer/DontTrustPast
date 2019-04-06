@@ -162,7 +162,14 @@ var playState = {
 	},
 
 	warriorsCollision: function(a,b){
+		a.body.enable = false;
+		b.body.enable = false;
 
+		game.add.tween(a.scale).to({x:0}, 150).start();
+		game.add.tween(a).to({y:50}, 150).start();
+
+		game.add.tween(b.scale).to({x:0}, 150).start();
+		game.add.tween(b).to({y:50}, 150).start();
 	},
 
 	jumpPlayer: function() {
