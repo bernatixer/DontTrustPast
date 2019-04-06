@@ -21,6 +21,9 @@ var playState = {
         game.load.image('warrior2', 'assets/Warriors/Warrior2_32.png');
         game.load.image('chariot1', 'assets/Warriors/Chariot1_32.png');
         game.load.image('chariot2', 'assets/Warriors/Chariot2_32.png');
+        game.load.image('spy1', 'assets/Warriors/Spy1_32.png');
+        game.load.image('spy2', 'assets/Warriors/Spy2_32.png');
+
 
         if (!game.device.desktop) {
             game.load.image('right', 'assets/right.png');
