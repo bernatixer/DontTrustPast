@@ -16,14 +16,14 @@ var roundTime = 1; // IN SECONDS
 
 // HOW MUCH RESOURCES EACH UNIT EAT PER ROUND
 var feedAttackUnits = 1;
-var feedDeffenseUnits = 1;
+var feedDefenseUnits = 1;
 var feedSpyUnits = 2;
-var feedSum = feedAttackUnits + feedDeffenseUnits + feedSpyUnits;
+var feedSum = feedAttackUnits + feedDefenseUnits + feedSpyUnits;
 
 // UNIT COSTS
 var unitCosts = {
   'attack': { wood: 10, iron: 5 },
-  'deffense': { wood: 5, iron: 10 },
+  'defense': { wood: 5, iron: 10 },
   'spy': { wood: 10, iron: 10 }
 }
 
@@ -40,7 +40,7 @@ var firstPlayer = {
   iron: 100,
   food: 500,
   attack: 10,
-  deffense: 10,
+  defense: 10,
   spy: 0,
   wizard: 0,
 };
@@ -49,7 +49,7 @@ var secondPlayer = {
   iron: 100,
   food: 500,
   attack: 10,
-  deffense: 10,
+  defense: 10,
   spy: 0,
   wizard: 0,
 };
@@ -70,32 +70,32 @@ function incrementResources() {
 function feedUnits() {
   var troopsInCastle = 0;
   troopsInCastle += feedAttackUnits*firstPlayer['attack'];
-  troopsInCastle += feedDeffenseUnits*firstPlayer['deffense'];
+  troopsInCastle += feedDefenseUnits*firstPlayer['defense'];
   troopsInCastle += feedSpyUnits*firstPlayer['spy'];
   firstPlayer['food'] -= troopsInCastle;
   if (firstPlayer['food'] < 0) {
     let A = firstPlayer['attack'] * feedAttackUnits/feedSum;
-    let B = firstPlayer['deffense'] * feedDeffenseUnits/feedSum;
+    let B = firstPlayer['defense'] * feedDefenseUnits/feedSum;
     let C = firstPlayer['spy'] * feedSpyUnits/feedSum;
     let X = (A+B+C)/(-firstPlayer['food']);
     firstPlayer['attack'] -= Math.floor((Math.random()*A) + Math.floor(A/2));
-    firstPlayer['deffense'] -= Math.floor((Math.random()*B) + Math.floor(B/2));
+    firstPlayer['defense'] -= Math.floor((Math.random()*B) + Math.floor(B/2));
     firstPlayer['spy'] -= Math.floor((Math.random()*C) + Math.floor(C/2));
     firstPlayer['food'] = 0;
   }
 
   troopsInCastle = 0;
   troopsInCastle += feedAttackUnits*secondPlayer['attack'];
-  troopsInCastle += feedDeffenseUnits*secondPlayer['deffense'];
+  troopsInCastle += feedDefenseUnits*secondPlayer['defense'];
   troopsInCastle += feedSpyUnits*secondPlayer['spy'];
   secondPlayer['food'] -= troopsInCastle;
   if (secondPlayer['food'] < 0) {
     let A = secondPlayer['attack'] * feedAttackUnits/feedSum;
-    let B = secondPlayer['deffense'] * feedDeffenseUnits/feedSum;
+    let B = secondPlayer['defense'] * feedDefenseUnits/feedSum;
     let C = secondPlayer['spy'] * feedSpyUnits/feedSum;
     let X = (A+B+C)/(-secondPlayer['food']);
     secondPlayer['attack'] -= Math.floor((Math.random()*A) + Math.floor(A/2));
-    secondPlayer['deffense'] -= Math.floor((Math.random()*B) + Math.floor(B/2));
+    secondPlayer['defense'] -= Math.floor((Math.random()*B) + Math.floor(B/2));
     secondPlayer['spy'] -= Math.floor((Math.random()*C) + Math.floor(C/2));
     secondPlayer['food'] = 0;
   }

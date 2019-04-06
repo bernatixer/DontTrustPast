@@ -108,7 +108,7 @@ var playState = {
         }
 
         if (defend.isDown && !this.defendDown) {
-            attack('deffense');
+            attack('defense');
         }
 
         if (wizard.isDown && !this.wizardDown) {
