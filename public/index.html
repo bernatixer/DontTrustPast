@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="style/style.css" />
     <meta name="viewport" content="initial-scale=1.0" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     <script type="text/javascript" src="js/phaser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script type="text/javascript" src="js/sockets.js"></script>
@@ -26,11 +27,12 @@
       </div>
       <div class="resources">
         <div>
-          <span> WOOD: </span>  <b id="wood"></b><br>
-          <span> IRON: </span>  <b id="iron"></b><br>
-          <span> FOOD: </span>  <b id="food"></b><br>
+          <span><i class="fas fa-tree" style="margin-right: 2px; margin-left: 2px;"></i> WOOD: </span><b id="wood"></b><br>
+          <span><i class="fas fa-cube"></i> IRON: </span><b id="iron"></b><br>
+          <span><i class="fas fa-drumstick-bite"></i> FOOD: </span><b id="food"></b><br>
         </div>
       </div>
+      <div class="messages">You can't recruit more troops</div>
     </div>
     <div class="body" id="joc" />
   </body>

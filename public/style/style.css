@@ -8,11 +8,11 @@
 .header {
 	height: 20vh;
 	position: relative;
-	background-color: #E3D1FF;	
+	background-color: #E3D1FF;
 }
 
 .header  span {
-	font-family: 'Playfair Display', serif;
+	font-family: 'Roboto Mono', monospace;
 	font-weight: 700;
 }
 
@@ -28,6 +28,7 @@
 	width: 25px;
 	height: 25px;
 	margin: 5px 5px;
+	color: #E3D1FF;
 	background-color: #744C8C;
 }
 
@@ -42,7 +43,7 @@ button, input[type="submit"], input[type="reset"] {
 }
 
 
-.recruiters,.resources{
+.recruiters,.resources, .messages{
 	display: inline-block;
 	width: 50%;
 	height: 100%;
@@ -50,4 +51,15 @@ button, input[type="submit"], input[type="reset"] {
 
 	display: flex;
 	align-items: center;
+}
+
+.resources{
+	width:25%;
+}
+
+.messages{
+	font-family: 'Roboto Condensed', sans-serif;
+	width:25%;
+	justify-content: center;
+	background-color: #F44336;
 }
