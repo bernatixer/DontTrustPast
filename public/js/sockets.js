@@ -15,12 +15,12 @@ socket.on('unitCosts', function(costs) {
 });
 socket.on('myStatus', function(stat) {
   status = JSON.stringify(stat);
-  document.getElementById('wood').innerHTML = stat.wood;
-  document.getElementById('iron').innerHTML = stat.iron;
-  document.getElementById('food').innerHTML = stat.food;
-  document.getElementById('attack').innerHTML = stat.attack;
-  document.getElementById('defense').innerHTML = stat.defense;
-  document.getElementById('spy').innerHTML = stat.spy;
+  document.getElementById('wood').innerHTML = Math.floor(stat.wood);
+  document.getElementById('iron').innerHTML = Math.floor(stat.iron);
+  document.getElementById('food').innerHTML = Math.floor(stat.food);
+  document.getElementById('attack').innerHTML = Math.floor(stat.attack);
+  document.getElementById('defense').innerHTML = Math.floor(stat.defense);
+  document.getElementById('spy').innerHTML = Math.floor(stat.spy);
   if (stat.wizard === 1) {
     message('You can now train a Wizard');
   }
