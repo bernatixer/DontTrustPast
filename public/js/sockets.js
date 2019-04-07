@@ -25,6 +25,9 @@ socket.on('myStatus', function(stat) {
     message('You can now train a Wizard');
   }
 });
+socket.on('leavePast', function() {
+  // 
+});
 socket.on('attack', function(data) {
   let unit;
   if (data.data.type === 'attack') unit = UNITS.CHARIOT;

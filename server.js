@@ -172,6 +172,7 @@ io.on('connection', function(socket) {
             firstFinished = true;
             if (secondFinished) {
               inWizard = false;
+              io.emit('leavePast');
               console.log('FINISHED STACK')
             }
           }
@@ -186,6 +187,7 @@ io.on('connection', function(socket) {
             secondFinished = true;
             if (firstFinished) {
               inWizard = false;
+              io.emit('leavePast');
               console.log('FINISHED STACK')
             }
           }
