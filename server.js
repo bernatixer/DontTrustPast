@@ -250,11 +250,19 @@ io.on('connection', function(socket) {
         secondCastleLife -= 1;
         if (secondCastleLife <= 0) {
           io.emit('endGame', 'first');
+        } else if (secondCastleLife <= 10){
+          io.emit('changeTexture', {castle:2, level:'L'})
+        } else if (secondCastleLife <= 20){
+          io.emit('changeTexture', {castle:2, level:'M'})
         }
       } else if (playerPos === 'second') {
         firstCastleLife -= 1;
         if (firstCastleLife <= 0) {
           io.emit('endGame', 'second');
+        } else if (firstCastleLife <= 10){
+          io.emit('changeTexture', {castle:1, level:'L'})
+        } else if (firstCastleLife <= 20){
+          io.emit('changeTexture', {castle:1, level:'M'})
         }
       }
     } else if (type === 'spy') {

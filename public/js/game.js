@@ -165,41 +165,58 @@ var playState = {
         if (y === UNITS.CHARIOT) stringType = 'attack';
         if (y === UNITS.SPY) stringType = 'spy';
         console.log(x, y, id);
-        if ((x == 2 && id === 'first') || (x == 1 && id === 'second')) socket.emit('attackCastle', stringType);
-        if (y === UNITS.SPY) {
-            if (x === 1) {
-                this.players.first.castleHealth--;
-                if (this.players.first.castleHealth <= 10) this.players.first.castle.loadTexture("castle1L");
-                else if (this.players.first.castleHealth <= 20) this.players.first.castle.loadTexture("castle1M");
-            } else {
-                this.players.second.castleHealth--;
-                if (this.players.second.castleHealth <= 10) this.players.second.castle.loadTexture("castle2L");
-                else if (this.players.second.castleHealth <= 20) this.players.second.castle.loadTexture("castle2M");
-            }
-        }
+        if ((x === 2 && id === 'first') || (x === 1 && id === 'second')) socket.emit('attackCastle', stringType);
+    },
+
+    changeCastleTexture(castle, level) {
+      if (castle === 1){
+          switch(level){
+              case 'H':
+                  this.players.first.castle.loadTexture('castle1H');
+                  break;
+              case 'M':
+                  this.players.first.castle.loadTexture('castle1M');
+                  break;
+              case 'L':
+                  this.players.first.castle.loadTexture('castle1L');
+                  break;
+          }
+      } else {
+          switch(level){
+              case 'H':
+                  this.players.second.castle.loadTexture('castle2H');
+                  break;
+              case 'M':
+                  this.players.second.castle.loadTexture('castle2M');
+                  break;
+              case 'L':
+                  this.players.second.castle.loadTexture('castle2L');
+                  break;
+          }
+      }
     },
 
     enterPast: function (team) {
         game.add.sprite(0, 0, 'background_past', 0, this.background);
         game.stage.backgroundColor = BACKGROUND_PAST;
 
-        this.players.first.attack.forEachAlive(function(p) {
+        this.players.first.attack.forEachAlive(function (p) {
             p.kill();
         }, this);
-        this.players.first.defend.forEachAlive(function(p) {
+        this.players.first.defend.forEachAlive(function (p) {
             p.kill();
         }, this);
-        this.players.first.spies.forEachAlive(function(p) {
+        this.players.first.spies.forEachAlive(function (p) {
             p.kill();
         }, this);
 
-        this.players.second.attack.forEachAlive(function(p) {
+        this.players.second.attack.forEachAlive(function (p) {
             p.kill();
         }, this);
-        this.players.second.defend.forEachAlive(function(p) {
+        this.players.second.defend.forEachAlive(function (p) {
             p.kill();
         }, this);
-        this.players.second.spies.forEachAlive(function(p) {
+        this.players.second.spies.forEachAlive(function (p) {
             p.kill();
         }, this);
 
@@ -209,10 +226,10 @@ var playState = {
     leavePast: function () {
         game.add.sprite(0, 0, 'background', 0, this.background);
 
-        this.players.first.wizards.forEachAlive(function(p){
+        this.players.first.wizards.forEachAlive(function (p) {
             p.kill();
         }, this);
-        this.players.second.wizards.forEachAlive(function(p){
+        this.players.second.wizards.forEachAlive(function (p) {
             p.kill();
         }, this);
     },

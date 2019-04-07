@@ -42,6 +42,10 @@ socket.on('attack', function(data) {
   }
 });
 
+socket.on('changeTexture', function(data) {
+  playState.changeCastleTexture(data.castle, data.level);
+});
+
 
 socket.on('simulateAttack', data => socket.emit('attack', data));
 socket.on('simulateRecruit', data => socket.emit('recruit', data));
