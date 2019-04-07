@@ -161,44 +161,50 @@ io.on('connection', function(socket) {
       }
       // STACK DESPRÉS DE L'ESPIA
       console.log('------------------------');
-      var firstFinished = false;
-      var secondFinished = false;
-      for (let i = 0; i < actionsFirst.length; ++i) {
+      var maxWhen;
+      if (actionsFirst.length === 0 && actionsSecond.length != 0) {
+        maxWhen = actionsSecond[actionsSecond.length-1].when;
+      } else if (actionsSecond.length === 0 && actionsFirst.length != 0) {
+        maxWhen = actionsFirst[actionsFirst.length-1].when;
+      } else if (actionsFirst[actionsFirst.length-1].when > actionsSecond[actionsSecond.length-1].when) {
+        maxWhen = actionsFirst[actionsFirst.length-1].when;
+      } else {
+        maxWhen = actionsSecond[actionsSecond.length-1].when;
+      }
+
+      var actionsCount = actionsFirst.length;
+      for (let i = 0; i < actionsCount; ++i) {
         setTimeout(function() {
           console.log(actionsFirst[i]);
           if (actionsFirst[i].action === 'attack') attackSocket({type: actionsFirst[i].type, num: 1});
           if (actionsFirst[i].action === 'recruit') recruitSocket({type: actionsFirst[i].type, num: 1});
-          if (i === actionsFirst.length-1) {
-            firstFinished = true;
-            if (secondFinished) {
-              inWizard = false;
+          if (actionsFirst[i].when === maxWhen) {
+            inWizard = false;
+            setTimeout(function() {
               io.emit('leavePast');
               console.log('FINISHED STACK')
-            }
+            }, 7000);
           }
         }, (actionsFirst[i].when-startTime) * 1000);
       }
-      for (let i = 0; i < actionsSecond.length; ++i) {
+      actionsCount = actionsSecond.length;
+      for (let i = 0; i < actionsCount; ++i) {
         setTimeout(function() {
           console.log(actionsSecond[i]);
           if (actionsSecond[i].action === 'attack') attackSocket({type: actionsSecond[i].type, num: 1});
           if (actionsSecond[i].action === 'recruit') recruitSocket({type: actionsSecond[i].type, num: 1});
-          if (i === actionsSecond.length-1) {
-            secondFinished = true;
-            if (firstFinished) {
-              inWizard = false;
+          if (actionsSecond[i].when === maxWhen) {
+            inWizard = false;
+            setTimeout(function() {
               io.emit('leavePast');
               console.log('FINISHED STACK')
-            }
+            }, 7000);
           }
         }, (actionsSecond[i].when-startTime) * 1000);
       }
     } else if (playerPos === 'second') {
       // SEGON LLENÇA WIZARD
     }
-    console.log('------------------------');
-    console.log('FIRST', actionsFirst);
-    console.log('SECOND', actionsSecond);
   });
 
   function attackSocket(data) {

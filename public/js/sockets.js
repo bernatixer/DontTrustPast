@@ -26,7 +26,8 @@ socket.on('myStatus', function(stat) {
   }
 });
 socket.on('leavePast', function() {
-  // 
+  console.log('leaving past')
+  playState.leavePast();
 });
 socket.on('attack', function(data) {
   let unit;
