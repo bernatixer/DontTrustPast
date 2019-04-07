@@ -3,6 +3,7 @@ var playState = {
         game.stage.backgroundColor = BACKGROUND_6;
 
         game.load.image('background', 'assets/Background_purple_mountains.png');
+        game.load.image('background_past', 'assets/Background_purple_mountains_night.png');
 
         game.load.image('grass', 'assets/grass.png');
         game.load.image('grass2', 'assets/grass2.png');
@@ -133,7 +134,7 @@ var playState = {
         }
 
         if (wizard.isDown && !this.wizardDown) {
-            attack('wizard');
+            this.enterPast();
         }
         this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;
@@ -159,6 +160,15 @@ var playState = {
         }
     },
 
+    enterPast: function() {
+        this.spawnUnit(2, UNITS.WIZARD);
+        game.add.sprite(0, 0, 'background_past', 0, this.background);
+    },
+
+    leavePast: function() {
+        game.add.sprite(0, 0, 'background', 0, this.background);
+    },
+
     spawnUnit: function (team, type) {
         const Team = team === 1 ? this.players.first : this.players.second;
         let tmp = game.add.sprite(Team.spawnPos.y, Team.spawnPos.x, type + team.toString(), 0, Team[getSection(type)]);
@@ -179,6 +189,7 @@ var playState = {
                 tmp.body.velocity.x = 0;
                 tmp.body.velocity.y = 0;
                 socket.emit('wizard');
+                this.enterPast();
             });
             timer.start();
         }
