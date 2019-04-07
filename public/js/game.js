@@ -134,7 +134,7 @@ var playState = {
         }
 
         if (wizard.isDown && !this.wizardDown) {
-            this.enterPast();
+            cast_wizard();
         }
         this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;
@@ -160,12 +160,11 @@ var playState = {
         }
     },
 
-    enterPast: function() {
+    enterPast: function () {
         this.spawnUnit(2, UNITS.WIZARD);
-        game.add.sprite(0, 0, 'background_past', 0, this.background);
     },
 
-    leavePast: function() {
+    leavePast: function () {
         game.add.sprite(0, 0, 'background', 0, this.background);
     },
 
@@ -188,8 +187,9 @@ var playState = {
             timer.add(1500, () => {
                 tmp.body.velocity.x = 0;
                 tmp.body.velocity.y = 0;
-                socket.emit('wizard');
-                this.enterPast();
+                game.add.sprite(0, 0, 'background_past', 0, this.background);
+                game.stage.backgroundColor = BACKGROUND_PAST;
+                attack('wizard');
             });
             timer.start();
         }
