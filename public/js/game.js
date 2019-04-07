@@ -92,11 +92,33 @@ var playState = {
         }, this);
     },
 
+    stopMinions: function () {
+        this.players.first.attack.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.first.defend.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.first.spies.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.attack.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.defend.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.spies.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+    },
+
     inputs: function () {
         let attackUnit = game.input.keyboard.addKey(Phaser.KeyCode.A);
         let spy = game.input.keyboard.addKey(Phaser.KeyCode.S);
         let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
         let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
+
 
         if (attackUnit.isDown && !this.attackDown) {
             attack('attack');
@@ -145,6 +167,21 @@ var playState = {
         tmp.body.gravity.y = 600;
         tmp.body.setSize(20, 20, 0, 0);
         tmp.body.velocity.x = getUnitSpeed(team, type);
+
+        if (type === UNITS.WIZARD) {
+            this.stopMinions();
+            tmp.body.gravity.y = 0;
+            let x = (this.players.first.spawnPos.y + this.players.second.spawnPos.y) / 2;
+            let y = 200;
+            game.physics.arcade.moveToXY(tmp, x, y, 60, 1500);
+            const timer = game.time.create(true);
+            timer.add(1500, () => {
+                tmp.body.velocity.x = 0;
+                tmp.body.velocity.y = 0;
+                socket.emit('wizard');
+            });
+            timer.start();
+        }
     },
 
     warriorsCollision: function (a, b) {
