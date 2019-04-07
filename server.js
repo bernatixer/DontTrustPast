@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 // MAIN STACK
-// { player: ID, action: 'RECRUIT || ATTACK', units: 15, when: Math.floor(Date.now() / 1000) }
+// { player: ID, action: 'RECRUIT || ATTACK', units: 15, when: Date.now() }
 var actionsFirst = [];
 var actionsSecond = [];
 
@@ -185,7 +185,7 @@ io.on('connection', function(socket) {
               console.log('FINISHED STACK')
             }, 7000);
           }
-        }, (actionsFirst[i].when-startTime) * 1000);
+        }, (actionsFirst[i].when-startTime));
       }
       actionsCount = actionsSecond.length;
       for (let i = 0; i < actionsCount; ++i) {
@@ -200,10 +200,10 @@ io.on('connection', function(socket) {
               console.log('FINISHED STACK')
             }, 7000);
           }
-        }, (actionsSecond[i].when-startTime) * 1000);
+        }, (actionsSecond[i].when-startTime));
       }
     } else if (playerPos === 'second') {
-      // SEGON LLENÇA WIZARD
+      // TODO: SEGON LLENÇA WIZARD
     }
   });
 
@@ -219,7 +219,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'first', data});
         io.to('first').emit('myStatus', firstPlayer);
         // AFEGIR ACCIÓ
-        actionsFirst.push({ action: 'attack', type: data.type, when: Math.floor(Date.now() / 1000) });
+        actionsFirst.push({ action: 'attack', type: data.type, when: Date.now() });
       }
     } else if (playerPos === 'second') {
       if (secondPlayer[data.type] - 1 >= 0) {
@@ -227,7 +227,7 @@ io.on('connection', function(socket) {
         io.emit('attack', {attacker: 'second', data});
         io.to('second').emit('myStatus', secondPlayer);
         // AFEGIR ACCIÓ
-        actionsSecond.push({ action: 'attack', type: data.type, when: Math.floor(Date.now() / 1000) });
+        actionsSecond.push({ action: 'attack', type: data.type, when: Date.now() });
       }
     }
   }
@@ -251,7 +251,7 @@ io.on('connection', function(socket) {
         if (secondPlayer['spy'] === 0) {
           firstPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsFirst.push({ action: 'spy', when: Math.floor(Date.now() / 1000), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
+          actionsFirst.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
         } else {
           secondPlayer['spy'] -= 1;
         }
@@ -259,7 +259,7 @@ io.on('connection', function(socket) {
         if (firstPlayer['spy'] === 0) {
           secondPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsSecond.push({ action: 'spy', when: Math.floor(Date.now() / 1000), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
+          actionsSecond.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
         } else {
           firstPlayer['spy'] -= 1;
         }
@@ -277,7 +277,7 @@ io.on('connection', function(socket) {
         firstPlayer['iron'] -= unitCost['iron']*data.num;
         firstPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
-        actionsFirst.push({ action: 'recruit', type: data.type, when: Math.floor(Date.now() / 1000) });
+        actionsFirst.push({ action: 'recruit', type: data.type, when: Date.now() });
       }
     } else if (playerPos === 'second') {
       if (unitCost['wood']*data.num <= secondPlayer['wood'] && unitCost['iron']*data.num <= secondPlayer['iron']) {
@@ -285,7 +285,7 @@ io.on('connection', function(socket) {
         secondPlayer['iron'] -= unitCost['iron']*data.num;
         secondPlayer[data.type] += data.num;
         // AFEGIR ACCIÓ
-        actionsSecond.push({ action: 'recruit', type: data.type, when: Math.floor(Date.now() / 1000) });
+        actionsSecond.push({ action: 'recruit', type: data.type, when: Date.now() });
       }
     }
   }
