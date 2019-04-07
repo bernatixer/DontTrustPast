@@ -26,3 +26,14 @@ function attack(type) {
     }
   }
 }
+
+function cast_wizard() {
+    const type = UNITS.WIZARD;
+    var num = 1;
+    var tempStatus = JSON.parse(status);
+    if (tempStatus[type] - 1 >= 0) {
+        tempStatus[type] -= 1;
+        socket.emit('attack', {type, num});
+        status = JSON.stringify(tempStatus);
+    }
+}
