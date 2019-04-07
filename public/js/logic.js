@@ -1,4 +1,5 @@
 function recruit(type) {
+  console.log(type)
   var num = 1;
   var unitCost = JSON.parse(unitCosts)[type];
   var tempStatus = JSON.parse(status);

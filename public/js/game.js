@@ -120,6 +120,21 @@ var playState = {
         let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
         let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
 
+        let recruitAttack = game.input.keyboard.addKey(Phaser.KeyCode.Z);
+        let recruitSpy = game.input.keyboard.addKey(Phaser.KeyCode.X);
+        let recruitDefend = game.input.keyboard.addKey(Phaser.KeyCode.C);
+
+        if (recruitAttack.isDown && !this.attackDownR) {
+            recruit('attack');
+        }
+
+        if (recruitDefend.isDown && !this.defendDownR) {
+            recruit('defense');
+        }
+
+        if (recruitSpy.isDown && !this.spyDownR) {
+            recruit('spy');
+        }
 
         if (attackUnit.isDown && !this.attackDown) {
             attack('attack');
@@ -136,6 +151,9 @@ var playState = {
         if (wizard.isDown && !this.wizardDown) {
             cast_wizard();
         }
+        this.attackDownR = recruitAttack.isDown;
+        this.defendDownR = recruitDefend.isDown;
+        this.spyDownR = recruitSpy.isDown;
         this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;
         this.defendDown = defend.isDown;
@@ -146,7 +164,8 @@ var playState = {
         let stringType = '';
         if (y === UNITS.CHARIOT) stringType = 'attack';
         if (y === UNITS.SPY) stringType = 'spy';
-        socket.emit('attackCastle', stringType);
+        console.log(x, y, id);
+        if ((x == 2 && id === 'first') || (x == 1 && id === 'second')) socket.emit('attackCastle', stringType);
         if (y === UNITS.SPY) {
             if (x === 1) {
                 this.players.first.castleHealth--;
@@ -160,7 +179,7 @@ var playState = {
         }
     },
 
-    enterPast: function () {
+    enterPast: function (team) {
         game.add.sprite(0, 0, 'background_past', 0, this.background);
         game.stage.backgroundColor = BACKGROUND_PAST;
 
@@ -184,7 +203,7 @@ var playState = {
             p.kill();
         }, this);
 
-        attack('wizard');
+        if ((team === 1 && id === 'first') || (team === 2 && id === 'second')) attack('wizard');
     },
 
     leavePast: function () {
@@ -217,7 +236,7 @@ var playState = {
             timer.add(1500, () => {
                 tmp.body.velocity.x = 0;
                 tmp.body.velocity.y = 0;
-                this.enterPast();
+                this.enterPast(team);
             });
             timer.start();
         }

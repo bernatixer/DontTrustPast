@@ -10,8 +10,8 @@ var actionsFirst = [];
 var actionsSecond = [];
 
 // EACH ROUND: initResources + round * multiplyPerRound
-var initResources = 20;
-var multiplyPerRound = 0;
+var initResources = 5;
+var multiplyPerRound = 0.1;
 var roundTime = 1; // IN SECONDS
 
 // HOW MUCH RESOURCES EACH UNIT EAT PER ROUND
@@ -22,9 +22,9 @@ var feedSum = feedAttackUnits + feedDefenseUnits + feedSpyUnits;
 
 // UNIT COSTS
 var unitCosts = {
-  'attack': { wood: 10, iron: 5 },
-  'defense': { wood: 5, iron: 10 },
-  'spy': { wood: 10, iron: 10 }
+  'attack': { wood: 20, iron: 10 },
+  'defense': { wood: 10, iron: 20 },
+  'spy': { wood: 20, iron: 20 }
 }
 
 // CASTLE LIFE
@@ -37,20 +37,21 @@ var wizardRound = 0;
 var gameState = 'EMPTY';
 
 var inWizard = false;
+var poisoned = '';
 
 var firstPlayer = {
-  wood: 100,
-  iron: 100,
-  food: 500,
+  wood: 10,
+  iron: 10,
+  food: 1500,
   attack: 10,
   defense: 10,
   spy: 0,
   wizard: 0,
 };
 var secondPlayer = {
-  wood: 100,
-  iron: 100,
-  food: 500,
+  wood: 10,
+  iron: 10,
+  food: 1500,
   attack: 10,
   defense: 10,
   spy: 0,
@@ -62,14 +63,20 @@ app.get('/', (req, res) => res.send('OK'));
 
 function incrementResources() {
   var currRound = round;
-  if (inWizard) currRound = wizardRound;
-  firstPlayer['wood'] += initResources + currRound*multiplyPerRound;
-  firstPlayer['iron'] += initResources + currRound*multiplyPerRound;
-  firstPlayer['food'] += initResources + currRound*multiplyPerRound;
+  var wizardDamageFirst = 1;
+  var wizardDamageSecond = 1;
+  if (inWizard) {
+    currRound = wizardRound;
+    if (poisoned === 'first') wizardDamageFirst = 0;
+    if (poisoned === 'second') wizardDamageSecond = 0;
+  }
+  firstPlayer['wood'] += (initResources + currRound*multiplyPerRound) * wizardDamageFirst;
+  firstPlayer['iron'] += (initResources + currRound*multiplyPerRound) * wizardDamageFirst;
+  firstPlayer['food'] += (initResources + currRound*multiplyPerRound);
 
-  secondPlayer['wood'] += initResources + currRound*multiplyPerRound;
-  secondPlayer['iron'] += initResources + currRound*multiplyPerRound;
-  secondPlayer['food'] += initResources + currRound*multiplyPerRound;
+  secondPlayer['wood'] += (initResources + currRound*multiplyPerRound) * wizardDamageSecond;
+  secondPlayer['iron'] += (initResources + currRound*multiplyPerRound) * wizardDamageSecond;
+  secondPlayer['food'] += (initResources + currRound*multiplyPerRound);
 }
 
 function feedUnits() {
@@ -139,10 +146,10 @@ io.on('connection', function(socket) {
   }
 
   socket.on('wizard', () => {
+    console.log(actionsFirst, actionsSecond);
     inWizard = true;
-    console.log('FIRST', actionsFirst);
-    console.log('SECOND', actionsSecond);
     if (playerPos === 'first') {
+      poisoned = 'second';
       var startTime;
       for (let i = actionsFirst.length-1; i >= 0; --i) {
         if (actionsFirst[i].action === 'spy') {
@@ -164,7 +171,6 @@ io.on('connection', function(socket) {
         }
       }
       // STACK DESPRÉS DE L'ESPIA
-      console.log('------------------------');
       var maxWhen;
       if (actionsFirst.length === 0 && actionsSecond.length != 0) {
         maxWhen = actionsSecond[actionsSecond.length-1].when;
@@ -183,8 +189,8 @@ io.on('connection', function(socket) {
           if (actionsFirst[i].action === 'attack') attackSocket({type: actionsFirst[i].type, num: 1});
           if (actionsFirst[i].action === 'recruit') recruitSocket({type: actionsFirst[i].type, num: 1});
           if (actionsFirst[i].when === maxWhen) {
-            inWizard = false;
             setTimeout(function() {
+              inWizard = false;
               io.emit('leavePast');
               console.log('FINISHED STACK')
             }, 7000);
@@ -198,8 +204,8 @@ io.on('connection', function(socket) {
           if (actionsSecond[i].action === 'attack') io.to('second').emit('simulateAttack', {type: actionsSecond[i].type, num: 1}); // attackSocket({type: actionsSecond[i].type, num: 1});
           if (actionsSecond[i].action === 'recruit') io.to('second').emit('simulateRecruit', {type: actionsSecond[i].type, num: 1}); // recruitSocket({type: actionsSecond[i].type, num: 1});
           if (actionsSecond[i].when === maxWhen) {
-            inWizard = false;
             setTimeout(function() {
+              inWizard = false;
               io.emit('leavePast');
               console.log('FINISHED STACK')
             }, 7000);
@@ -207,6 +213,7 @@ io.on('connection', function(socket) {
         }, (actionsSecond[i].when-startTime));
       }
     } else if (playerPos === 'second') {
+      poisoned = 'first';
       // TODO: SEGON LLENÇA WIZARD
     }
   });
