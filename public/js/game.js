@@ -75,7 +75,6 @@ var playState = {
         game.physics.arcade.collide(this.players.first.wizards, this.level);
         game.physics.arcade.collide(this.players.second.wizards, this.level);
 
-
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.attack, this.warriorsCollision, null, this);
         game.physics.arcade.overlap(this.players.first.attack, this.players.second.defend, this.warriorsCollision, null, this);
         game.physics.arcade.overlap(this.players.first.defend, this.players.second.attack, this.warriorsCollision, null, this);
@@ -112,7 +111,7 @@ var playState = {
         }
 
         if (wizard.isDown && !this.wizardDown) {
-            // attack('wizard');
+            attack('wizard');
         }
         this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;

@@ -14,7 +14,6 @@ socket.on('unitCosts', function(costs) {
   unitCosts = JSON.stringify(costs);
 });
 socket.on('myStatus', function(stat) {
-  let hadWizard = status.wizard === 1;
   status = JSON.stringify(stat);
   document.getElementById('wood').innerHTML = stat.wood;
   document.getElementById('iron').innerHTML = stat.iron;
@@ -22,7 +21,7 @@ socket.on('myStatus', function(stat) {
   document.getElementById('attack').innerHTML = stat.attack;
   document.getElementById('defense').innerHTML = stat.defense;
   document.getElementById('spy').innerHTML = stat.spy;
-  if (!hadWizard && stat.wizard === 1) {
+  if (stat.wizard === 1) {
     message('You can now train a Wizard');
   }
 });

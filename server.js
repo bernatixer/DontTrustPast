@@ -35,6 +35,8 @@ var secondCastleLife = 30;
 var round = 0;
 var gameState = 'EMPTY';
 
+var inWizard = false;
+
 var firstPlayer = {
   wood: 100,
   iron: 100,
@@ -102,11 +104,12 @@ function feedUnits() {
 }
 
 function executeRound() {
-   incrementResources();
-   feedUnits();
-   io.to('first').emit('myStatus', firstPlayer);
-   io.to('second').emit('myStatus', secondPlayer);
-   round += 1;
+  if (inWizard) return;
+  incrementResources();
+  feedUnits();
+  io.to('first').emit('myStatus', firstPlayer);
+  io.to('second').emit('myStatus', secondPlayer);
+  round += 1;
 }
 setInterval(executeRound, roundTime*1000);
 
@@ -132,7 +135,71 @@ io.on('connection', function(socket) {
     socket.emit('cantPlay');
   }
 
-  socket.on('attack', data => {
+  socket.on('wizard', () => {
+    inWizard = true;
+    console.log('FIRST', actionsFirst);
+    console.log('SECOND', actionsSecond);
+    if (playerPos === 'first') {
+      var startTime;
+      for (let i = actionsFirst.length-1; i >= 0; --i) {
+        if (actionsFirst[i].action === 'spy') {
+          startTime = actionsFirst[i].when;
+          firstPlayer = JSON.parse(actionsFirst[i].first);
+          secondPlayer = JSON.parse(actionsFirst[i].second);
+          firstCastleLife = actionsFirst[i].firstCastleLife;
+          secondCastleLife = actionsFirst[i].secondCastleLife;
+          actionsFirst = actionsFirst.slice(i+1, actionsFirst.length);
+          break;
+        }
+      }
+      let lastTime = actionsFirst[0].when;
+      for (let i = actionsSecond.length-1; i >= 0; --i) {
+        if (actionsSecond[i].when <= lastTime) {
+          actionsSecond = actionsSecond.slice(i, actionsSecond.length);
+          break;
+        }
+      }
+      // STACK DESPRÉS DE L'ESPIA
+      console.log('------------------------');
+      var firstFinished = false;
+      var secondFinished = false;
+      for (let i = 0; i < actionsFirst.length; ++i) {
+        setTimeout(function() {
+          console.log(actionsFirst[i]);
+          if (actionsFirst[i].action === 'attack') attackSocket({type: actionsFirst[i].type, num: 1});
+          if (actionsFirst[i].action === 'recruit') recruitSocket({type: actionsFirst[i].type, num: 1});
+          if (i === actionsFirst.length-1) {
+            firstFinished = true;
+            if (secondFinished) {
+              inWizard = false;
+              console.log('FINISHED STACK')
+            }
+          }
+        }, (actionsFirst[i].when-startTime) * 1000);
+      }
+      for (let i = 0; i < actionsSecond.length; ++i) {
+        setTimeout(function() {
+          console.log(actionsSecond[i]);
+          if (actionsSecond[i].action === 'attack') attackSocket({type: actionsSecond[i].type, num: 1});
+          if (actionsSecond[i].action === 'recruit') recruitSocket({type: actionsSecond[i].type, num: 1});
+          if (i === actionsSecond.length-1) {
+            secondFinished = true;
+            if (firstFinished) {
+              inWizard = false;
+              console.log('FINISHED STACK')
+            }
+          }
+        }, (actionsSecond[i].when-startTime) * 1000);
+      }
+    } else if (playerPos === 'second') {
+      // SEGON LLENÇA WIZARD
+    }
+    console.log('------------------------');
+    console.log('FIRST', actionsFirst);
+    console.log('SECOND', actionsSecond);
+  });
+
+  function attackSocket(data) {
     var unitCost = unitCosts[data.type];
     if (playerPos === 'first') {
       if (firstPlayer[data.type] - 1 >= 0) {
@@ -151,7 +218,8 @@ io.on('connection', function(socket) {
         actionsSecond.push({ action: 'attack', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     }
-  });
+  }
+  socket.on('attack', attackSocket);
 
   socket.on('attackCastle', type => {
     if (type === 'attack') {
@@ -159,8 +227,6 @@ io.on('connection', function(socket) {
         secondCastleLife -= 1;
         if (secondCastleLife <= 0) {
           io.emit('endGame', 'first');
-          console.log('FIRST', actionsFirst);
-          console.log('SECOND', actionsSecond);
         }
       } else if (playerPos === 'second') {
         firstCastleLife -= 1;
@@ -173,7 +239,7 @@ io.on('connection', function(socket) {
         if (secondPlayer['spy'] === 0) {
           firstPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsFirst.push({ action: 'spy', type: data.type, when: Math.floor(Date.now() / 1000) });
+          actionsFirst.push({ action: 'spy', when: Math.floor(Date.now() / 1000), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
         } else {
           secondPlayer['spy'] -= 1;
         }
@@ -181,7 +247,7 @@ io.on('connection', function(socket) {
         if (firstPlayer['spy'] === 0) {
           secondPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsSecond.push({ action: 'spy', type: data.type, when: Math.floor(Date.now() / 1000) });
+          actionsSecond.push({ action: 'spy', when: Math.floor(Date.now() / 1000), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
         } else {
           firstPlayer['spy'] -= 1;
         }
@@ -191,7 +257,7 @@ io.on('connection', function(socket) {
     io.to('second').emit('myStatus', secondPlayer);
   });
 
-  socket.on('recruit', data => {
+  function recruitSocket(data) {
     var unitCost = unitCosts[data.type];
     if (playerPos === 'first') {
       if (unitCost['wood']*data.num <= firstPlayer['wood'] && unitCost['iron']*data.num <= firstPlayer['iron']) {
@@ -210,7 +276,8 @@ io.on('connection', function(socket) {
         actionsSecond.push({ action: 'recruit', type: data.type, when: Math.floor(Date.now() / 1000) });
       }
     }
-  });
+  }
+  socket.on('recruit', recruitSocket);
 
 });
 
