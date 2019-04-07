@@ -33,6 +33,7 @@ socket.on('attack', function(data) {
   if (data.data.type === 'attack') unit = UNITS.CHARIOT;
   if (data.data.type === 'defense') unit = UNITS.WARRIOR;
   if (data.data.type === 'spy') unit = UNITS.SPY;
+  if (data.data.type === 'wizard') unit = UNITS.WIZARD;
   if (data.attacker === 'first') {
     playState.spawnUnit(1, unit);
   } else if (data.attacker === 'second') {

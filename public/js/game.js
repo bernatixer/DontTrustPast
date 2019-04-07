@@ -3,6 +3,7 @@ var playState = {
         game.stage.backgroundColor = BACKGROUND_6;
 
         game.load.image('background', 'assets/Background_purple_mountains.png');
+        game.load.image('background_past', 'assets/Background_purple_mountains_night.png');
 
         game.load.image('grass', 'assets/grass.png');
         game.load.image('grass2', 'assets/grass2.png');
@@ -92,11 +93,33 @@ var playState = {
         }, this);
     },
 
+    stopMinions: function () {
+        this.players.first.attack.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.first.defend.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.first.spies.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.attack.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.defend.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+        this.players.second.spies.forEachAlive(function (p) {
+            p.body.velocity = 0;
+        }, this);
+    },
+
     inputs: function () {
         let attackUnit = game.input.keyboard.addKey(Phaser.KeyCode.A);
         let spy = game.input.keyboard.addKey(Phaser.KeyCode.S);
         let defend = game.input.keyboard.addKey(Phaser.KeyCode.D);
         let wizard = game.input.keyboard.addKey(Phaser.KeyCode.W);
+
 
         if (attackUnit.isDown && !this.attackDown) {
             attack('attack');
@@ -111,7 +134,7 @@ var playState = {
         }
 
         if (wizard.isDown && !this.wizardDown) {
-            attack('wizard');
+            this.enterPast();
         }
         this.attackDown = attackUnit.isDown;
         this.spyDown = spy.isDown;
@@ -137,6 +160,15 @@ var playState = {
         }
     },
 
+    enterPast: function() {
+        this.spawnUnit(2, UNITS.WIZARD);
+        game.add.sprite(0, 0, 'background_past', 0, this.background);
+    },
+
+    leavePast: function() {
+        game.add.sprite(0, 0, 'background', 0, this.background);
+    },
+
     spawnUnit: function (team, type) {
         const Team = team === 1 ? this.players.first : this.players.second;
         let tmp = game.add.sprite(Team.spawnPos.y, Team.spawnPos.x, type + team.toString(), 0, Team[getSection(type)]);
@@ -145,6 +177,22 @@ var playState = {
         tmp.body.gravity.y = 600;
         tmp.body.setSize(20, 20, 0, 0);
         tmp.body.velocity.x = getUnitSpeed(team, type);
+
+        if (type === UNITS.WIZARD) {
+            this.stopMinions();
+            tmp.body.gravity.y = 0;
+            let x = (this.players.first.spawnPos.y + this.players.second.spawnPos.y) / 2;
+            let y = 200;
+            game.physics.arcade.moveToXY(tmp, x, y, 60, 1500);
+            const timer = game.time.create(true);
+            timer.add(1500, () => {
+                tmp.body.velocity.x = 0;
+                tmp.body.velocity.y = 0;
+                socket.emit('wizard');
+                this.enterPast();
+            });
+            timer.start();
+        }
     },
 
     warriorsCollision: function (a, b) {
