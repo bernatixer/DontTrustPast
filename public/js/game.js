@@ -161,11 +161,41 @@ var playState = {
     },
 
     enterPast: function () {
-        this.spawnUnit(2, UNITS.WIZARD);
+        game.add.sprite(0, 0, 'background_past', 0, this.background);
+        game.stage.backgroundColor = BACKGROUND_PAST;
+
+        this.players.first.attack.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+        this.players.first.defend.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+        this.players.first.spies.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+
+        this.players.second.attack.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+        this.players.second.defend.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+        this.players.second.spies.forEachAlive(function(p) {
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+
+        attack('wizard');
     },
 
     leavePast: function () {
         game.add.sprite(0, 0, 'background', 0, this.background);
+
+        this.players.first.wizards.forEachAlive(function(p){
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
+        this.players.second.wizards.forEachAlive(function(p){
+            game.add.tween(p.scale).to({x: 0}, 1).start();
+        }, this);
     },
 
     spawnUnit: function (team, type) {
@@ -187,9 +217,7 @@ var playState = {
             timer.add(1500, () => {
                 tmp.body.velocity.x = 0;
                 tmp.body.velocity.y = 0;
-                game.add.sprite(0, 0, 'background_past', 0, this.background);
-                game.stage.backgroundColor = BACKGROUND_PAST;
-                attack('wizard');
+                this.enterPast();
             });
             timer.start();
         }
