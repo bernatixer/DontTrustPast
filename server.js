@@ -33,6 +33,7 @@ var secondCastleLife = 30;
 
 // EMPTY || WAITING || PLAYING
 var round = 0;
+var wizardRound = 0;
 var gameState = 'EMPTY';
 
 var inWizard = false;
@@ -60,13 +61,15 @@ app.use(express.static('public'))
 app.get('/', (req, res) => res.send('OK'));
 
 function incrementResources() {
-  firstPlayer['wood'] += initResources + round*multiplyPerRound;
-  firstPlayer['iron'] += initResources + round*multiplyPerRound;
-  firstPlayer['food'] += initResources + round*multiplyPerRound;
+  var currRound = round;
+  if (inWizard) currRound = wizardRound;
+  firstPlayer['wood'] += initResources + currRound*multiplyPerRound;
+  firstPlayer['iron'] += initResources + currRound*multiplyPerRound;
+  firstPlayer['food'] += initResources + currRound*multiplyPerRound;
 
-  secondPlayer['wood'] += initResources + round*multiplyPerRound;
-  secondPlayer['iron'] += initResources + round*multiplyPerRound;
-  secondPlayer['food'] += initResources + round*multiplyPerRound;
+  secondPlayer['wood'] += initResources + currRound*multiplyPerRound;
+  secondPlayer['iron'] += initResources + currRound*multiplyPerRound;
+  secondPlayer['food'] += initResources + currRound*multiplyPerRound;
 }
 
 function feedUnits() {
@@ -104,12 +107,12 @@ function feedUnits() {
 }
 
 function executeRound() {
-  if (inWizard) return;
   incrementResources();
   feedUnits();
   io.to('first').emit('myStatus', firstPlayer);
   io.to('second').emit('myStatus', secondPlayer);
   round += 1;
+  wizardRound += 1;
 }
 setInterval(executeRound, roundTime*1000);
 
@@ -148,6 +151,7 @@ io.on('connection', function(socket) {
           secondPlayer = JSON.parse(actionsFirst[i].second);
           firstCastleLife = actionsFirst[i].firstCastleLife;
           secondCastleLife = actionsFirst[i].secondCastleLife;
+          wizardRound = actionsFirst[i].round;
           actionsFirst = actionsFirst.slice(i+1, actionsFirst.length);
           break;
         }
@@ -191,8 +195,8 @@ io.on('connection', function(socket) {
       for (let i = 0; i < actionsCount; ++i) {
         setTimeout(function() {
           console.log(actionsSecond[i]);
-          if (actionsSecond[i].action === 'attack') attackSocket({type: actionsSecond[i].type, num: 1});
-          if (actionsSecond[i].action === 'recruit') recruitSocket({type: actionsSecond[i].type, num: 1});
+          if (actionsSecond[i].action === 'attack') io.to('second').emit('simulateAttack', {type: actionsSecond[i].type, num: 1}); // attackSocket({type: actionsSecond[i].type, num: 1});
+          if (actionsSecond[i].action === 'recruit') io.to('second').emit('simulateRecruit', {type: actionsSecond[i].type, num: 1}); // recruitSocket({type: actionsSecond[i].type, num: 1});
           if (actionsSecond[i].when === maxWhen) {
             inWizard = false;
             setTimeout(function() {
@@ -251,7 +255,7 @@ io.on('connection', function(socket) {
         if (secondPlayer['spy'] === 0) {
           firstPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsFirst.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
+          actionsFirst.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife, round });
         } else {
           secondPlayer['spy'] -= 1;
         }
@@ -259,7 +263,7 @@ io.on('connection', function(socket) {
         if (firstPlayer['spy'] === 0) {
           secondPlayer['wizard'] = 1;
           // AFEGIR ACCIÓ
-          actionsSecond.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife });
+          actionsSecond.push({ action: 'spy', when: Date.now(), first: JSON.stringify(firstPlayer), second: JSON.stringify(secondPlayer), firstCastleLife, secondCastleLife, round });
         } else {
           firstPlayer['spy'] -= 1;
         }
