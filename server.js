@@ -208,6 +208,10 @@ io.on('connection', function(socket) {
   });
 
   function attackSocket(data) {
+    if (data.type === 'wizard') {
+      io.emit('attack', {attacker: playerPos, data});
+      return;
+    }
     var unitCost = unitCosts[data.type];
     if (playerPos === 'first') {
       if (firstPlayer[data.type] - 1 >= 0) {
