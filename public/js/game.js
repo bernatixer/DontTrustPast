@@ -165,23 +165,23 @@ var playState = {
         game.stage.backgroundColor = BACKGROUND_PAST;
 
         this.players.first.attack.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
         this.players.first.defend.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
         this.players.first.spies.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
 
         this.players.second.attack.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
         this.players.second.defend.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
         this.players.second.spies.forEachAlive(function(p) {
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
 
         attack('wizard');
@@ -191,10 +191,10 @@ var playState = {
         game.add.sprite(0, 0, 'background', 0, this.background);
 
         this.players.first.wizards.forEachAlive(function(p){
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
         this.players.second.wizards.forEachAlive(function(p){
-            game.add.tween(p.scale).to({x: 0}, 1).start();
+            p.kill();
         }, this);
     },
 
